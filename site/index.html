@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perch — Privacy-first analytics for all your sites</title>
+  <meta name="description" content="Perch is a cookieless, self-hostable web analytics tool with one quiet dashboard for every landing page you run. Full data, no sampling.">
+  <meta name="theme-color" content="#f2efe4">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Perch — A quiet vantage point over all your sites">
+  <meta property="og:description" content="Cookieless, self-hostable analytics for landing pages. One tiny script, one private portfolio dashboard, full unsampled data.">
+  <meta property="og:url" content="https://YOUR-GITHUB-USER.github.io/YOUR-REPO/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Perch — Privacy-first analytics">
+  <meta name="twitter:description" content="One tiny script and one private dashboard for every landing page you run.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317221b'/%3E%3Cpath d='M20 48V16h14c9 0 15 5 15 13s-6 13-15 13h-6v6h-8Zm8-14h6c4 0 7-2 7-5s-3-5-7-5h-6v10Z' fill='%23c8e474'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      --ink: #17221b;
+      --paper: #f2efe4;
+      --white: #fffdf7;
+      --line: #cbc7ba;
+      --muted: #5d6961;
+      --green: #2f6045;
+      --lime: #c8e474;
+      --coral: #e5774c;
+      --blue: #8fafd2;
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      font-synthesis: none;
+      scroll-behavior: smooth;
+    }
+    * { box-sizing: border-box; }
+    html { max-width: 100%; overflow-x: hidden; }
+    body { margin: 0; min-width: 320px; overflow-x: hidden; }
+    button, input { font: inherit; }
+    a { color: inherit; }
+    .wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+    .nav { border-bottom: 1px solid rgba(23, 34, 27, .14); }
+    .nav-inner { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .logo { display: flex; gap: 10px; align-items: center; text-decoration: none; font-size: 1.12rem; font-weight: 880; letter-spacing: -.045em; }
+    .logo-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: var(--ink); color: var(--lime); font-weight: 900; }
+    .nav-links { display: flex; align-items: center; gap: 26px; font-size: .84rem; font-weight: 720; }
+    .nav-links a { text-decoration: none; }
+    .nav-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .nav-cta { padding: 10px 15px; border-radius: 999px; background: var(--ink); color: #fff; }
+    .hero { position: relative; padding: 90px 0 70px; }
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: 55px;
+      right: -8vw;
+      width: clamp(220px, 34vw, 500px);
+      aspect-ratio: 1;
+      border: 1px solid rgba(23,34,27,.12);
+      border-radius: 50%;
+      background: repeating-radial-gradient(circle at 50% 50%, transparent 0 28px, rgba(49,95,69,.07) 29px 30px);
+    }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .55fr); gap: 70px; align-items: end; }
+    .badge { display: inline-flex; gap: 8px; align-items: center; margin-bottom: 26px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,253,247,.65); font-size: .74rem; font-weight: 800; }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: #4e9a69; box-shadow: 0 0 0 5px rgba(78,154,105,.12); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 900px; margin-bottom: 28px; font-size: clamp(3.65rem, 8.6vw, 8.2rem); line-height: .85; letter-spacing: -.085em; font-weight: 850; }
+    .hero-word { display: inline-block; color: var(--green); }
+    .subhead { max-width: 720px; margin-bottom: 32px; color: var(--muted); font-size: clamp(1.08rem, 2vw, 1.34rem); line-height: 1.55; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; border: 1px solid var(--ink); border-radius: 999px; text-decoration: none; font-weight: 820; }
+    .button.primary { background: var(--ink); color: #fff; }
+    .button.primary::after { content: "↗"; }
+    .button.secondary:hover { background: var(--white); }
+    .hero-note { padding: 24px 0 7px 22px; border-left: 1px solid var(--ink); }
+    .hero-note strong { display: block; margin-bottom: 24px; font-family: Georgia, serif; font-size: 2.4rem; line-height: 1; font-weight: 400; font-style: italic; }
+    .hero-note p { margin: 0; color: var(--muted); font-size: .87rem; line-height: 1.6; }
+    .strip { border-block: 1px solid var(--ink); background: var(--lime); }
+    .strip-inner { display: flex; gap: 28px; justify-content: space-between; padding: 14px 0; overflow: hidden; font-size: .72rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; }
+    section.block { padding: 108px 0; border-bottom: 1px solid rgba(23,34,27,.13); }
+    .section-head { display: grid; grid-template-columns: .48fr 1fr; gap: 42px; margin-bottom: 54px; align-items: start; }
+    .kicker { color: var(--green); font-size: .74rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    h2 { max-width: 800px; margin-bottom: 18px; font-size: clamp(2.4rem, 5.4vw, 5.1rem); line-height: .95; letter-spacing: -.07em; }
+    .section-copy { max-width: 680px; margin-bottom: 0; color: var(--muted); font-size: 1.06rem; line-height: 1.7; }
+    .install { background: var(--ink); color: #fff; }
+    .install .kicker { color: var(--lime); }
+    .install .section-copy { color: #b9c3bc; }
+    .code-window { overflow: hidden; border: 1px solid #465049; border-radius: 18px; background: #0f1612; box-shadow: 0 28px 80px rgba(0,0,0,.2); }
+    .code-top { display: flex; justify-content: space-between; align-items: center; min-height: 58px; padding: 0 18px; border-bottom: 1px solid #354038; color: #acb8b0; font-size: .73rem; }
+    .dots { letter-spacing: 4px; color: var(--coral); }
+    .copy { padding: 8px 12px; border: 1px solid #536158; border-radius: 8px; background: transparent; color: #fff; cursor: pointer; font-size: .74rem; font-weight: 750; }
+    .copy:hover { border-color: var(--lime); color: var(--lime); }
+    pre { margin: 0; padding: 32px; overflow-x: auto; color: #dce9df; font: 500 .9rem/1.75 ui-monospace, SFMono-Regular, Consolas, monospace; tab-size: 2; }
+    .code-accent { color: var(--lime); }
+    .under-code { display: flex; gap: 30px; justify-content: space-between; margin-top: 20px; color: #aab5ae; font-size: .78rem; }
+    .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+    .value { min-height: 245px; padding: 30px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255,253,247,.45); }
+    .value-num { display: block; margin-bottom: 55px; color: var(--green); font: italic 1.25rem Georgia, serif; }
+    .value h3 { margin-bottom: 12px; font-size: 1.25rem; letter-spacing: -.035em; }
+    .value p { margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.65; }
+    .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .feature { min-height: 195px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+    .feature-icon { display: grid; width: 38px; height: 38px; margin-bottom: 28px; place-items: center; border-radius: 50%; background: var(--green); color: var(--lime); font-weight: 850; }
+    .feature h3 { margin-bottom: 9px; font-size: 1rem; }
+    .feature p { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.55; }
+    .steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+    .step { counter-increment: step; min-height: 285px; padding: 32px; background: var(--paper); }
+    .step::before { content: "0" counter(step); display: block; margin-bottom: 76px; color: var(--green); font-family: ui-monospace, monospace; }
+    .step h3 { margin-bottom: 12px; font-size: 1.5rem; letter-spacing: -.04em; }
+    .step p { color: var(--muted); line-height: 1.65; }
+    .preview-block { background: #dce9df; }
+    .dashboard { padding: 18px; border: 1px solid rgba(23,34,27,.25); border-radius: 22px; background: var(--paper); box-shadow: 0 38px 100px rgba(23,34,27,.18); }
+    .dash-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 8px 7px 24px; }
+    .dash-logo { font-weight: 850; letter-spacing: -.04em; }
+    .fake-select { padding: 9px 32px 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); font-size: .74rem; font-weight: 700; }
+    .dash-title { padding: 26px 6px 18px; }
+    .dash-title small { color: var(--green); font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+    .dash-title h3 { max-width: 700px; margin: 10px 0 0; font-size: clamp(2rem, 5vw, 4.5rem); line-height: .95; letter-spacing: -.065em; }
+    .dash-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .dash-kpi { padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--white); }
+    .dash-kpi span { color: var(--muted); font-size: .65rem; font-weight: 750; text-transform: uppercase; }
+    .dash-kpi strong { display: block; margin-top: 13px; font-size: 1.65rem; letter-spacing: -.055em; }
+    .dash-grid { display: grid; grid-template-columns: 1.6fr .8fr; gap: 8px; margin-top: 8px; }
+    .dash-card { min-height: 235px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
+    .chart-bars { height: 160px; display: flex; align-items: end; gap: 7px; padding-top: 20px; border-bottom: 1px solid var(--line); background: repeating-linear-gradient(to bottom, transparent 0 39px, #eee9de 40px); }
+    .chart-bars i { flex: 1; min-width: 6px; border-radius: 4px 4px 0 0; background: var(--green); }
+    .chart-bars i:nth-child(3n) { background: var(--coral); }
+    .rank-list { display: grid; gap: 12px; padding-top: 16px; }
+    .rank-line { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: .75rem; font-weight: 700; }
+    .rank-line::after { content: ""; grid-column: 1 / -1; height: 5px; border-radius: 9px; background: linear-gradient(to right, var(--green) var(--w), #e5e1d6 var(--w)); }
+    .comparison-wrap { overflow-x: auto; border: 1px solid var(--line); }
+    .comparison { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--white); }
+    .comparison th, .comparison td { padding: 20px; border-bottom: 1px solid var(--line); text-align: center; font-size: .85rem; }
+    .comparison th:first-child, .comparison td:first-child { text-align: left; }
+    .comparison th { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; }
+    .comparison th.perch { background: var(--ink); color: var(--lime); }
+    .comparison td.perch { background: #edf3e9; font-weight: 800; }
+    .yes { color: var(--green); font-weight: 850; }
+    .limited { color: #9a502f; }
+    .privacy { color: #fff; background: var(--green); }
+    .privacy .kicker { color: var(--lime); }
+    .privacy .section-copy { color: #d2dfd6; }
+    .privacy-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: end; }
+    .privacy-list { display: grid; gap: 0; border-top: 1px solid rgba(255,255,255,.28); }
+    .privacy-item { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 17px 0; border-bottom: 1px solid rgba(255,255,255,.28); color: #edf5ef; }
+    .privacy-item span:first-child { color: var(--lime); }
+    .open-card { display: grid; grid-template-columns: 1fr auto; gap: 40px; padding: 52px; border-radius: 24px; background: var(--coral); color: #27140d; align-items: end; }
+    .open-card h2 { max-width: 780px; margin-bottom: 15px; }
+    .open-card p { max-width: 660px; margin-bottom: 0; line-height: 1.65; }
+    .open-links { display: grid; gap: 10px; min-width: 180px; }
+    .open-links a { display: flex; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid rgba(39,20,13,.35); text-decoration: none; font-weight: 800; }
+    .faq { display: grid; grid-template-columns: .62fr 1fr; gap: 70px; }
+    .faq h2 { position: sticky; top: 30px; }
+    .questions { border-top: 1px solid var(--line); }
+    details { border-bottom: 1px solid var(--line); }
+    summary { position: relative; padding: 24px 42px 24px 0; cursor: pointer; list-style: none; font-size: 1.06rem; font-weight: 780; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; position: absolute; right: 4px; font-size: 1.45rem; font-weight: 400; }
+    details[open] summary::after { content: "–"; }
+    details p { max-width: 650px; padding: 0 42px 24px 0; margin: 0; color: var(--muted); line-height: 1.7; }
+    footer { padding: 34px 0; background: var(--ink); color: #fff; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 30px; align-items: center; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 22px; color: #bdc8c1; font-size: .78rem; }
+    .footer-links a { text-decoration: none; }
+    @media (max-width: 900px) {
+      .hero-grid, .privacy-grid { grid-template-columns: 1fr; }
+      .hero-note { max-width: 430px; }
+      .section-head, .faq { grid-template-columns: 1fr; gap: 20px; }
+      .faq h2 { position: static; }
+      .value-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .dash-kpis { grid-template-columns: repeat(3, 1fr); }
+      .open-card { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 28px, 1180px); }
+      .nav-inner { height: 66px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding: 66px 0 55px; }
+      .hero-grid { gap: 42px; }
+      h1 { font-size: clamp(3.4rem, 19vw, 5.4rem); }
+      section.block { padding: 76px 0; }
+      .value-grid, .feature-grid, .steps { grid-template-columns: 1fr; }
+      .value { min-height: 210px; }
+      .value-num { margin-bottom: 36px; }
+      .under-code { flex-direction: column; gap: 7px; }
+      pre { padding: 22px; font-size: .76rem; }
+      .dash-kpis { grid-template-columns: repeat(2, 1fr); }
+      .dash-grid { grid-template-columns: 1fr; }
+      .dash-kpi:last-child { display: none; }
+      .open-card { padding: 30px; border-radius: 18px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      :root { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="logo" href="#top" aria-label="Perch home">
+        <span class="logo-mark" aria-hidden="true">P</span>
+        <span>Perch</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#features">Features</a>
+        <a href="#comparison">Compare</a>
+        <a href="#faq">FAQ</a>
+        <a class="nav-cta" href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md" data-perch-cta="get-started-nav">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="badge"><i class="pulse" aria-hidden="true"></i> Privacy-first · open source</span>
+          <h1>A quiet <span class="hero-word">vantage point</span> over all your sites.</h1>
+          <p class="subhead">Cookieless, self-hostable analytics for landing pages—one tiny script and one calm dashboard for every project you run.</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md" data-perch-cta="get-started-hero">Get started</a>
+            <a class="button secondary" href="#dashboard-preview" data-perch-cta="demo-hero">See the metrics</a>
+          </div>
+        </div>
+        <aside class="hero-note" aria-label="Perch promise">
+          <strong>“Know what’s working without watching people.”</strong>
+          <p>No cookies. No individual profiles. No sprawling setup. Just honest signals from the sites you care about.</p>
+        </aside>
+      </div>
+    </section>
+
+    <div class="strip" aria-label="Product highlights">
+      <div class="wrap strip-inner">
+        <span>Full data · no sampling</span>
+        <span>Under 3 KB gzipped</span>
+        <span>Own your data</span>
+        <span>One dashboard · every project</span>
+      </div>
+    </div>
+
+    <section class="block install" id="install">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="kicker">One-line install</span>
+          <div>
+            <h2>One tag. The whole picture.</h2>
+            <p class="section-copy">Add the tracker once. Perch handles pageviews, campaigns, outbound links, and the CTA signals that tell you whether a landing page is doing its job.</p>
+          </div>
+        </header>
+        <div class="code-window">
+          <div class="code-top">
+            <span class="dots" aria-hidden="true">● ● ●</span>
+            <button class="copy" id="copy-install" type="button">Copy snippet</button>
+          </div>
+          <pre id="install-code" aria-label="Perch installation snippet">&lt;script
+  src="<span class="code-accent">https://YOUR-USER.github.io/YOUR-REPO/perch.min.js</span>"
+  data-endpoint="<span class="code-accent">https://YOUR-WORKER.workers.dev/collect</span>"
+  data-project-id="<span class="code-accent">my-project</span>"
+  defer
+&gt;&lt;/script&gt;</pre>
+        </div>
+        <div class="under-code">
+          <span>Vanilla JavaScript · no runtime dependencies</span>
+          <span>Works on any static page or framework</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="why">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="kicker">Why Perch</span>
+          <div>
+            <h2>Simple where it should be. Capable where it counts.</h2>
+            <p class="section-copy">Built for indie makers, small teams, and agencies who run more than one landing page—and want answers without surrendering visitor data.</p>
+          </div>
+        </header>
+        <div class="value-grid">
+          <article class="value"><span class="value-num">01</span><h3>Full data, never sampled</h3><p>Every event stays queryable. No hidden 10% sample or truncated top rows.</p></article>
+          <article class="value"><span class="value-num">02</span><h3>Every project in one view</h3><p>See which site is winning, then drill into the project behind the signal.</p></article>
+          <article class="value"><span class="value-num">03</span><h3>LLM-ready installation</h3><p>A deterministic guide lets an agent deploy, instrument, verify, and hand over the bookmark.</p></article>
+          <article class="value"><span class="value-num">04</span><h3>Cookieless by design</h3><p>No persistent identity, no cross-day trail, and typically no analytics consent banner.</p></article>
+          <article class="value"><span class="value-num">05</span><h3>Tiny on the page</h3><p>The tracker targets under 3 KB gzipped and stays out of your rendering path.</p></article>
+          <article class="value"><span class="value-num">06</span><h3>Your data, your edge</h3><p>Run on Cloudflare Worker + D1 free-tier infrastructure that you control.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="features">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="kicker">The useful signals</span>
+          <div>
+            <h2>Everything a landing page needs to tell you.</h2>
+            <p class="section-copy">Perch keeps the scope focused while covering the traffic, attention, acquisition, and conversion questions that actually shape the next iteration.</p>
+          </div>
+        </header>
+        <div class="feature-grid">
+          <article class="feature"><span class="feature-icon">↗</span><h3>Traffic</h3><p>Pageviews, daily unique visitors, sessions, bounce rate, and pages per session.</p></article>
+          <article class="feature"><span class="feature-icon">◎</span><h3>Engagement</h3><p>CTA clicks, custom events, and automatic outbound-link tracking.</p></article>
+          <article class="feature"><span class="feature-icon">↙</span><h3>Acquisition</h3><p>Referring hosts plus UTM source, medium, and campaign.</p></article>
+          <article class="feature"><span class="feature-icon">◇</span><h3>Audience</h3><p>Country, device, browser, operating system, and language.</p></article>
+          <article class="feature"><span class="feature-icon">≡</span><h3>Content</h3><p>Top pages and entry pages reveal where attention begins.</p></article>
+          <article class="feature"><span class="feature-icon">●</span><h3>Realtime</h3><p>Visitors active in the last five minutes, by project and globally.</p></article>
+          <article class="feature"><span class="feature-icon">%</span><h3>Conversions</h3><p>Unique CTA conversion and a simple pageview-to-CTA goal.</p></article>
+          <article class="feature"><span class="feature-icon">⌁</span><h3>Portfolio view</h3><p>Rank every project by traffic with comparisons and sparklines.</p></article>
+          <article class="feature"><span class="feature-icon">↓</span><h3>Export & API</h3><p>CSV downloads and a documented unsampled JSON rollup endpoint.</p></article>
+          <article class="feature"><span class="feature-icon">⚡</span><h3>Web Vitals</h3><p>Optional LCP, INP, and CLS collection—off until you ask for it.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="how">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="kicker">How it works</span>
+          <div><h2>From script tag to clear decisions.</h2></div>
+        </header>
+        <div class="steps">
+          <article class="step"><h3>Add one script</h3><p>Give each landing page a stable project ID and mark the CTAs that matter.</p></article>
+          <article class="step"><h3>Send to your edge</h3><p>Your Cloudflare Worker enriches anonymous events and stores them in your D1 database.</p></article>
+          <article class="step"><h3>Open your dashboard</h3><p>Sign in once through Cloudflare Access and use one bookmark for every project.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block preview-block" id="dashboard-preview">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="kicker">Dashboard preview</span>
+          <div>
+            <h2>The high ground, without the noise.</h2>
+            <p class="section-copy">Lead with the portfolio, spot the project drawing attention, then move into the details.</p>
+          </div>
+        </header>
+        <div class="dashboard" role="img" aria-label="Preview of the Perch analytics dashboard showing portfolio metrics">
+          <div class="dash-top"><span class="dash-logo">P · Perch</span><span class="fake-select">All projects⌄</span></div>
+          <div class="dash-title"><small>Portfolio overview</small><h3>All your sites, one quiet view.</h3></div>
+          <div class="dash-kpis">
+            <div class="dash-kpi"><span>Pageviews</span><strong>18,492</strong></div>
+            <div class="dash-kpi"><span>Unique visitors</span><strong>12,801</strong></div>
+            <div class="dash-kpi"><span>Sessions</span><strong>13,945</strong></div>
+            <div class="dash-kpi"><span>Live now</span><strong>37</strong></div>
+            <div class="dash-kpi"><span>Projects</span><strong>6</strong></div>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-card"><strong>Portfolio traffic</strong><div class="chart-bars" aria-hidden="true"><i style="height:31%"></i><i style="height:44%"></i><i style="height:36%"></i><i style="height:58%"></i><i style="height:51%"></i><i style="height:78%"></i><i style="height:70%"></i><i style="height:88%"></i><i style="height:76%"></i><i style="height:94%"></i><i style="height:82%"></i><i style="height:100%"></i></div></div>
+            <div class="dash-card"><strong>Top projects</strong><div class="rank-list"><div class="rank-line" style="--w:100%"><span>Studio launch</span><span>6.4k</span></div><div class="rank-line" style="--w:72%"><span>Field notes</span><span>4.6k</span></div><div class="rank-line" style="--w:49%"><span>Tiny tools</span><span>3.1k</span></div><div class="rank-line" style="--w:31%"><span>Portfolio</span><span>2.0k</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="comparison">
+      <div class="wrap">
+        <header class="section-head">
+          <span class="kicker">A calmer alternative</span>
+          <div>
+            <h2>Analytics on your terms.</h2>
+            <p class="section-copy">Perch is deliberately small and self-hosted, with the portfolio view and integration path built around independent site owners.</p>
+          </div>
+        </header>
+        <div class="comparison-wrap">
+          <table class="comparison">
+            <thead><tr><th>Capability</th><th class="perch">Perch</th><th>Google Analytics</th><th>Cloudflare Web Analytics</th></tr></thead>
+            <tbody>
+              <tr><td>Cookies / consent</td><td class="perch yes">Cookieless</td><td class="limited">Configuration-dependent</td><td class="yes">Cookieless</td></tr>
+              <tr><td>Sampling</td><td class="perch yes">None</td><td class="limited">Can apply</td><td class="limited">Sampled reporting</td></tr>
+              <tr><td>Data ownership</td><td class="perch yes">Your D1 database</td><td>Vendor-hosted</td><td>Vendor-hosted</td></tr>
+              <tr><td>Global multi-project view</td><td class="perch yes">Built in</td><td class="limited">Account navigation</td><td class="limited">Per-site views</td></tr>
+              <tr><td>Self-hostable</td><td class="perch yes">Yes</td><td>No</td><td>No</td></tr>
+              <tr><td>Base software price</td><td class="perch yes">Free / open source</td><td>Free tier</td><td>Free</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="block privacy" id="privacy">
+      <div class="wrap privacy-grid">
+        <div>
+          <span class="kicker">Privacy is the architecture</span>
+          <h2>Count the visit. Forget the visitor.</h2>
+          <p class="section-copy">Perch derives the minimum useful context at the edge, hashes and discards the raw IP, and rotates anonymous identifiers every day. There is no person-level profile to browse or sell.</p>
+        </div>
+        <div class="privacy-list">
+          <div class="privacy-item"><span>✓</span><span>No cookies or localStorage identity</span></div>
+          <div class="privacy-item"><span>✓</span><span>No raw IP stored or returned</span></div>
+          <div class="privacy-item"><span>✓</span><span>No cross-site or cross-day tracking</span></div>
+          <div class="privacy-item"><span>✓</span><span>Country-level geography only</span></div>
+          <div class="privacy-item"><span>✓</span><span>GDPR/CCPA-friendly, typically no banner</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="open-source">
+      <div class="wrap">
+        <div class="open-card">
+          <div>
+            <span class="kicker">Open source / free to run</span>
+            <h2>Keep the code. Keep the data. Keep the bill tiny.</h2>
+            <p>Perch uses GitHub Pages plus Cloudflare Worker and D1 free tiers for the traffic profile it is designed for. Fork it, inspect it, extend it, or let an LLM wire it into your next launch.</p>
+          </div>
+          <div class="open-links">
+            <a href="https://github.com/YOUR-USER/YOUR-REPO">GitHub repository <span>↗</span></a>
+            <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/README.md">Read overview <span>↗</span></a>
+            <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md">Integration guide <span>↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="faq">
+      <div class="wrap faq">
+        <div><span class="kicker">FAQ</span><h2>A few things worth knowing.</h2></div>
+        <div class="questions">
+          <details><summary>Do I need a cookie banner?</summary><p>Perch uses no cookies or persistent identity, so analytics alone typically does not require a consent banner. Your site may still need one for other tools; confirm requirements for your jurisdiction.</p></details>
+          <details><summary>Is Perch GDPR compliant?</summary><p>Perch is designed for data minimization: no raw IP storage, no cross-site profiles, daily-rotating anonymous hashes, and country-level location only. Compliance also depends on how you deploy it and what your site collects elsewhere.</p></details>
+          <details><summary>What does it cost?</summary><p>Perch itself is MIT-licensed. GitHub Pages, Cloudflare Workers, Access, and D1 all offer free tiers that suit personal and modest marketing traffic; provider usage fees may apply beyond those limits.</p></details>
+          <details><summary>Can I self-host it?</summary><p>Yes. That is the default model: your Worker, your D1 database, your Access policy, and your GitHub Pages site.</p></details>
+          <details><summary>How accurate is it?</summary><p>Perch queries every event it receives without sampling. Cookieless daily visitors and 30-minute sessions are intentionally coarse approximations, and blockers can prevent some events unless you use a first-party endpoint.</p></details>
+          <details><summary>How do I add another site?</summary><p>Register a new project ID, add the same tracker with that ID, and instrument its CTAs. It appears automatically inside the existing project dropdown—no new dashboard or backend.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true">P</span><span>Perch</span></a>
+      <div class="footer-links">
+        <a href="https://github.com/YOUR-USER/YOUR-REPO">Repository</a>
+        <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md">Docs</a>
+        <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/LICENSE">MIT License</a>
+        <span>© 2026 Perch</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var button = document.querySelector("#copy-install");
+      var code = document.querySelector("#install-code");
+      button.addEventListener("click", async function () {
+        var value = code.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch (_) {
+          var area = document.createElement("textarea");
+          area.value = value;
+          area.setAttribute("readonly", "");
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand("copy");
+          area.remove();
+        }
+        button.textContent = "Copied";
+        setTimeout(function () { button.textContent = "Copy snippet"; }, 1800);
+      });
+    })();
+  </script>
+  <script
+    src="./perch.min.js"
+    data-endpoint="https://YOUR-PERCH-WORKER.workers.dev/collect"
+    data-project-id="perch-site"
+    data-respect-dnt
+    data-skip-bots
+    defer
+  ></script>
+</body>
+</html>
