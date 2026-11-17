@@ -1,19 +1,20 @@
 {
   "name": "perch-analytics",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "description": "A quiet, privacy-first analytics vantage point for all your sites.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "build:pages": "node scripts/build-pages.mjs",
+    "dev": "npm run build && wrangler d1 migrations apply DB --local && wrangler dev",
+    "deploy": "npm run build && wrangler d1 migrations apply DB --remote && wrangler deploy",
     "test": "node --test --test-concurrency=1 test/*.test.mjs && node test/worker.integration.mjs",
     "test:all": "npm run build && npm test && npm run size",
     "size": "node scripts/check-size.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.1",
-    "jsdom": "^29.1.1",
     "miniflare": "^4.20260721.0",
     "playwright": "^1.61.1",
     "terser": "^5.49.0",

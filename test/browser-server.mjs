@@ -9,14 +9,18 @@ const types = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
-  ".json": "application/json; charset=utf-8"
+  ".json": "application/json; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".txt": "text/plain; charset=utf-8",
+  ".png": "image/png"
 };
 
 export async function startServer() {
   const server = createServer(async (request, response) => {
     try {
       const pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
-      const relative = pathname === "/" ? "site/index.html" : pathname.replace(/^\/+/, "");
+      let relative = pathname === "/" ? "site/index.html" : pathname.replace(/^\/+/, "");
+      if (relative.endsWith("/")) relative += "index.html";
       const target = resolve(root, relative);
       if (target !== root && !target.startsWith(root + sep)) {
         response.writeHead(403).end("Forbidden");

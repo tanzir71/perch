@@ -1,0 +1,25 @@
+# Perch
+
+> Perch is privacy-first, self-hostable web analytics for landing pages and small site portfolios. One tiny cookieless script sends events to the site owner's own Cloudflare Worker and D1 database; the Worker also serves a private multi-project dashboard behind Cloudflare Access.
+
+To add Perch to a site, read INTEGRATION.md and follow it from top to bottom. It is written for coding agents: fill the manifest, deploy or reuse the backend, register the project, add one script tag, mark CTAs, run the verification checklist, and hand the owner the dashboard URL.
+
+## Docs
+
+- [INTEGRATION.md](https://github.com/tanzir71/perch/blob/main/INTEGRATION.md): step-by-step integration and deployment guide for agents and developers
+- [AGENTS.md](https://github.com/tanzir71/perch/blob/main/AGENTS.md): hard rules for agents working on a Perch-enabled site
+- [README.md](https://github.com/tanzir71/perch/blob/main/README.md): overview, JSON API and privacy notes
+- [examples/before-after.md](https://github.com/tanzir71/perch/blob/main/examples/before-after.md): how to instrument CTAs without restructuring a page
+
+## Install snippet
+
+```html
+<script src="https://YOUR-WORKER-HOST/perch.js" data-project-id="your-site" defer></script>
+```
+
+## Rules
+
+- Never add cookies or client storage for identity; Perch uses none.
+- Never put personal information in event names or properties.
+- Insert the tag once per page and keep one stable project ID per site.
+- Keep /collect and /perch.js public; keep / and /api/* behind Cloudflare Access.

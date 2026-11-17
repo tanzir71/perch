@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import worker, {
   bucketScreen,
+  channelFor,
+  dateRange,
   hashVisitor,
+  isBot,
+  parseFilters,
   parseUA,
   refHost,
   rowFromEvent
@@ -48,6 +52,35 @@ test("refHost and bucketScreen normalize inputs", () => {
   assert.equal(bucketScreen(1600), "wide");
 });
 
+test("channelFor groups referrers and campaigns into channels", () => {
+  assert.equal(channelFor("chatgpt.com"), "AI assistants");
+  assert.equal(channelFor("www.perplexity.ai"), "AI assistants");
+  assert.equal(channelFor("gemini.google.com"), "AI assistants");
+  assert.equal(channelFor("www.google.co.uk"), "Search");
+  assert.equal(channelFor("news.ycombinator.com"), "Social");
+  assert.equal(channelFor("mail.google.com"), "Email");
+  assert.equal(channelFor("blog.example"), "Referral");
+  assert.equal(channelFor("", {}), "Direct");
+  assert.equal(channelFor("", { source: "launch" }), "Campaign");
+  assert.equal(channelFor("www.google.com", { medium: "cpc" }), "Paid");
+  assert.equal(channelFor("", { medium: "email" }), "Email");
+  assert.equal(channelFor("www.site.example", {}, "site.example"), "Internal");
+});
+
+test("filters, ranges and bot detection parse defensively", () => {
+  const url = new URL("https://perch.example/api/rollup?filter=referrer:news.ycombinator.com&filter=page:/a:b&filter=nope:x&filter=country:");
+  assert.deepEqual(parseFilters(url), [
+    { dim: "referrer", value: "news.ycombinator.com" },
+    { dim: "page", value: "/a:b" }
+  ]);
+  const range = dateRange(new URL("https://perch.example/?from=2026-11-01&to=2026-11-07"));
+  assert.equal(range.days, 7);
+  assert.equal(range.to, "2026-11-08T00:00:00.000Z");
+  assert.throws(() => dateRange(new URL("https://perch.example/?from=2026-11-08&to=2026-11-07")));
+  assert.equal(isBot("Mozilla/5.0 (compatible; Googlebot/2.1)"), true);
+  assert.equal(isBot("Mozilla/5.0 (Windows NT 10.0) Chrome/126.0"), false);
+});
+
 test("rowFromEvent derives coarse server-side fields without retaining an IP", async () => {
   const request = new Request("https://perch.example/collect", {
     method: "POST",
@@ -71,6 +104,14 @@ test("rowFromEvent derives coarse server-side fields without retaining an IP", a
   assert.equal(row.project_id, "my-project");
   assert.equal(Object.hasOwn(row, "ip"), false);
   assert.match(row.visitor_hash, /^[a-f0-9]{64}$/);
+  assert.equal(row.channel, "Referral");
+
+  const engagement = await rowFromEvent({
+    type: "engagement", projectId: "my-project", path: "/", scroll: 140, ms: 99_999_999
+  }, request, "secret", new Date("2026-07-23T10:00:00Z"));
+  assert.equal(engagement.scroll_pct, 100);
+  assert.equal(engagement.engaged_ms, 1_800_000);
+  assert.equal(engagement.name, null);
 });
 
 test("POST /collect inserts one normalized row and returns CORS", async () => {
@@ -80,6 +121,9 @@ test("POST /collect inserts one normalized row and returns CORS", async () => {
     DB: {
       prepare(sql) {
         return {
+          async all() {
+            return { results: [{ id: "site-one", origin: "https://site.example" }] };
+          },
           bind(...values) {
             return {
               async run() {
@@ -111,6 +155,7 @@ test("POST /collect inserts one normalized row and returns CORS", async () => {
   assert.equal(response.headers.get("access-control-allow-origin"), "https://site.example");
   assert.equal(calls.length, 1);
   assert.match(calls[0].sql, /INSERT INTO events/);
+  assert.equal(calls[0].values.length, 20);
   assert.equal(calls[0].values[0], "site-one");
   assert.equal(calls[0].values[1], "cta");
 

@@ -2,25 +2,31 @@
   "use strict";
 
   try {
+    // Never initialise twice, even if the tag is pasted twice.
+    if (window.perch && window.perch.v) return;
+
     var script = document.currentScript;
     if (!script) {
       var scripts = document.getElementsByTagName("script");
       script = scripts[scripts.length - 1];
     }
+    if (!script) return;
 
-    var endpoint = script && script.getAttribute("data-endpoint");
-    var projectId = script && script.getAttribute("data-project-id");
+    var projectId = script.getAttribute("data-project-id");
+    var endpoint = script.getAttribute("data-endpoint");
+    // Served by your own Worker (/perch.js)? The endpoint defaults to the same origin.
+    if (!endpoint && script.src) {
+      try {
+        endpoint = new URL(script.src, location.href).origin + "/collect";
+      } catch (_) {}
+    }
     if (!endpoint || !projectId) return;
 
     var enabled = true;
-    var respectDnt = script.hasAttribute("data-respect-dnt");
-    var skipBots = script.hasAttribute("data-skip-bots");
-    var noOutbound = script.hasAttribute("data-no-outbound");
-    var perfEnabled = script.hasAttribute("data-perf");
+    var has = function (name) { return script.hasAttribute(name); };
     var agent = navigator.userAgent || "";
-
-    if (respectDnt && (navigator.doNotTrack === "1" || window.doNotTrack === "1")) enabled = false;
-    if (skipBots && /bot|crawl|spider|headless|slurp|preview/i.test(agent)) enabled = false;
+    if (has("data-respect-dnt") && (navigator.doNotTrack === "1" || window.doNotTrack === "1")) enabled = false;
+    if (has("data-skip-bots") && /bot|crawl|spider|headless|slurp|preview/i.test(agent)) enabled = false;
 
     function clean(value, limit) {
       return String(value == null ? "" : value).slice(0, limit || 300);
@@ -55,23 +61,6 @@
       }
     }
 
-    function basePayload() {
-      var payload = {
-        path: clean(location.pathname || "/", 500),
-        ref: clean(document.referrer || "", 1000),
-        screen: Number(window.innerWidth || (screen && screen.width) || 0),
-        lang: clean(navigator.language || "", 30),
-        ts: new Date().toISOString(),
-        projectId: clean(projectId, 80)
-      };
-      try {
-        payload.tz = clean(Intl.DateTimeFormat().resolvedOptions().timeZone || "", 80);
-      } catch (_) {}
-      var utm = utmValues();
-      if (utm) payload.utm = utm;
-      return payload;
-    }
-
     function transmit(payload) {
       if (!enabled) return;
       try {
@@ -97,21 +86,75 @@
       } catch (_) {}
     }
 
-    function emit(type, name, props) {
+    function emit(type, name, props, extra) {
       try {
-        var payload = basePayload();
-        payload.type = type;
+        var payload = {
+          type: type,
+          path: clean(location.pathname || "/", 500),
+          ref: clean(document.referrer || "", 1000),
+          screen: Number(window.innerWidth || (screen && screen.width) || 0),
+          lang: clean(navigator.language || "", 30),
+          ts: new Date().toISOString(),
+          projectId: clean(projectId, 80)
+        };
+        var utm = utmValues();
+        if (utm) payload.utm = utm;
         if (name) payload.name = clean(name, 120);
         var filtered = safeProps(props);
         if (filtered) payload.props = filtered;
+        if (extra) {
+          for (var key in extra) payload[key] = extra[key];
+        }
         transmit(payload);
       } catch (_) {}
     }
 
+    // Engagement: deepest scroll and visible time per page, sent when the page is hidden.
+    var engagement = enabled && !has("data-no-engagement");
+    var maxScroll = 0;
+    var sentScroll = 0;
+    var visibleMs = 0;
+    var visibleSince = document.visibilityState === "hidden" ? 0 : Date.now();
+
+    function measureScroll() {
+      try {
+        var doc = document.documentElement;
+        var height = Math.max(doc.scrollHeight, document.body ? document.body.scrollHeight : 0);
+        var seen = (window.scrollY || doc.scrollTop || 0) + (window.innerHeight || doc.clientHeight || 0);
+        var pct = height > 0 ? Math.min(100, Math.round(seen / height * 100)) : 100;
+        if (pct > maxScroll) maxScroll = pct;
+      } catch (_) {}
+    }
+
+    function flush() {
+      if (!engagement) return;
+      measureScroll();
+      if (visibleSince) {
+        visibleMs += Date.now() - visibleSince;
+        visibleSince = document.visibilityState === "hidden" ? 0 : Date.now();
+      }
+      var ms = Math.min(visibleMs, 1800000);
+      if (ms < 1000 && maxScroll <= sentScroll) return;
+      emit("engagement", "", undefined, { scroll: maxScroll, ms: ms });
+      visibleMs = 0;
+      sentScroll = maxScroll;
+    }
+
+    function pageview() {
+      maxScroll = 0;
+      sentScroll = 0;
+      visibleMs = 0;
+      visibleSince = document.visibilityState === "hidden" ? 0 : Date.now();
+      measureScroll();
+      emit("pageview");
+    }
+
     function track(typeOrName, props) {
       try {
-        var known = /^(pageview|cta|outbound|custom)$/;
-        if (known.test(typeOrName)) {
+        if (typeOrName === "pageview") {
+          flush();
+          pageview();
+        } else if (/^(cta|outbound|custom)$/.test(typeOrName)) {
           emit(typeOrName, props && props.name, typeOrName === "custom" ? props && props.props : undefined);
         } else if (typeof typeOrName === "string" && typeOrName) {
           emit("custom", typeOrName, props);
@@ -121,38 +164,39 @@
 
     window.perch = window.perch || {};
     window.perch.track = track;
+    window.perch.v = 2;
 
-    if (enabled) {
-      try {
-        var pageKey = "perch:pageview:" + projectId;
-        if (!sessionStorage.getItem(pageKey)) {
-          sessionStorage.setItem(pageKey, "1");
-          emit("pageview");
-        }
-      } catch (_) {
-        emit("pageview");
-      }
+    if (!enabled) return;
+    pageview();
 
-      document.addEventListener("click", function (event) {
-        try {
-          var target = event.target && event.target.closest ? event.target : null;
-          if (!target) return;
-
-          var cta = target.closest("[data-perch-cta]");
-          if (cta) emit("cta", cta.getAttribute("data-perch-cta"));
-
-          if (noOutbound) return;
-          var link = target.closest("a[href]");
-          if (!link || link.hasAttribute("data-perch-ignore")) return;
-          var url = new URL(link.href, location.href);
-          if (/^https?:$/.test(url.protocol) && url.host !== location.host) {
-            emit("outbound", url.host);
-          }
-        } catch (_) {}
-      }, true);
+    if (engagement) {
+      addEventListener("scroll", measureScroll, { passive: true });
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") flush();
+        else visibleSince = Date.now();
+      });
+      addEventListener("pagehide", flush);
     }
 
-    if (enabled && perfEnabled && typeof PerformanceObserver === "function") {
+    document.addEventListener("click", function (event) {
+      try {
+        var target = event.target && event.target.closest ? event.target : null;
+        if (!target) return;
+
+        var cta = target.closest("[data-perch-cta]");
+        if (cta) emit("cta", cta.getAttribute("data-perch-cta"));
+
+        if (has("data-no-outbound")) return;
+        var link = target.closest("a[href]");
+        if (!link || link.hasAttribute("data-perch-ignore")) return;
+        var url = new URL(link.href, location.href);
+        if (/^https?:$/.test(url.protocol) && url.host !== location.host) {
+          emit("outbound", url.host);
+        }
+      } catch (_) {}
+    }, true);
+
+    if (has("data-perf") && typeof PerformanceObserver === "function") {
       try {
         var cls = 0;
         new PerformanceObserver(function (list) {

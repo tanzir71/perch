@@ -3,191 +3,357 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Perch — Privacy-first analytics for all your sites</title>
-  <meta name="description" content="Perch is a cookieless, self-hostable web analytics tool with one quiet dashboard for every landing page you run. Full data, no sampling.">
-  <meta name="theme-color" content="#f2efe4">
+  <title>Perch — Cookieless analytics for every site you run</title>
+  <meta name="description" content="Perch is privacy-first, self-hostable web analytics for landing pages and small site portfolios. One tiny script, one private dashboard on your own Cloudflare account, every event kept and nothing sampled.">
+  <meta name="theme-color" content="#12201A">
+  <link rel="canonical" href="https://tanzir71.github.io/perch/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Perch — A quiet vantage point over all your sites">
   <meta property="og:description" content="Cookieless, self-hostable analytics for landing pages. One tiny script, one private portfolio dashboard, full unsampled data.">
-  <meta property="og:url" content="https://YOUR-GITHUB-USER.github.io/YOUR-REPO/">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Perch — Privacy-first analytics">
+  <meta property="og:url" content="https://tanzir71.github.io/perch/">
+  <meta property="og:image" content="https://tanzir71.github.io/perch/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Perch — Cookieless analytics for every site you run">
   <meta name="twitter:description" content="One tiny script and one private dashboard for every landing page you run.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2317221b'/%3E%3Cpath d='M20 48V16h14c9 0 15 5 15 13s-6 13-15 13h-6v6h-8Zm8-14h6c4 0 7-2 7-5s-3-5-7-5h-6v10Z' fill='%23c8e474'/%3E%3C/svg%3E">
+  <meta name="twitter:image" content="https://tanzir71.github.io/perch/og.png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="alternate" type="text/plain" href="llms.txt" title="Perch for AI agents">
   <style>
     :root {
-      --ink: #17221b;
-      --paper: #f2efe4;
-      --white: #fffdf7;
-      --line: #cbc7ba;
-      --muted: #5d6961;
-      --green: #2f6045;
+      --ink: #12201a;
+      --canvas: #fff;
+      --subtle: #f6f5f0;
+      --tint: #eef4ef;
+      --line: #e4e2da;
+      --line-strong: #cfccc1;
+      --line-dark: #2e3f36;
+      --text-2: #4c5951;
+      --muted: #66716a;
+      --muted-dark: #a7b4ab;
+      --moss: #2f6045;
+      --moss-strong: #234a35;
+      --moss-soft: #e3eee6;
       --lime: #c8e474;
+      --lime-soft: #f0f7d9;
       --coral: #e5774c;
-      --blue: #8fafd2;
-      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --coral-soft: #fbe9e1;
+      --up: #23774a;
+      --down: #b4472a;
+      --code: #0e1612;
+      --shadow: 0 24px 64px -16px rgba(18, 32, 26, .14), 0 2px 6px rgba(18, 32, 26, .06);
+      --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       color: var(--ink);
-      background: var(--paper);
+      background: var(--canvas);
       font-synthesis: none;
+      -webkit-font-smoothing: antialiased;
       scroll-behavior: smooth;
     }
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     html { max-width: 100%; overflow-x: hidden; }
     body { margin: 0; min-width: 320px; overflow-x: hidden; }
-    button, input { font: inherit; }
+    button, input { font: inherit; color: inherit; }
     a { color: inherit; }
-    .wrap { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
-    .nav { border-bottom: 1px solid rgba(23, 34, 27, .14); }
-    .nav-inner { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
-    .logo { display: flex; gap: 10px; align-items: center; text-decoration: none; font-size: 1.12rem; font-weight: 880; letter-spacing: -.045em; }
-    .logo-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: var(--ink); color: var(--lime); font-weight: 900; }
-    .nav-links { display: flex; align-items: center; gap: 26px; font-size: .84rem; font-weight: 720; }
-    .nav-links a { text-decoration: none; }
-    .nav-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
-    .nav-cta { padding: 10px 15px; border-radius: 999px; background: var(--ink); color: #fff; }
-    .hero { position: relative; padding: 90px 0 70px; }
-    .hero::after {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      top: 55px;
-      right: -8vw;
-      width: clamp(220px, 34vw, 500px);
-      aspect-ratio: 1;
-      border: 1px solid rgba(23,34,27,.12);
-      border-radius: 50%;
-      background: repeating-radial-gradient(circle at 50% 50%, transparent 0 28px, rgba(49,95,69,.07) 29px 30px);
-    }
-    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(280px, .55fr); gap: 70px; align-items: end; }
-    .badge { display: inline-flex; gap: 8px; align-items: center; margin-bottom: 26px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,253,247,.65); font-size: .74rem; font-weight: 800; }
-    .pulse { width: 7px; height: 7px; border-radius: 50%; background: #4e9a69; box-shadow: 0 0 0 5px rgba(78,154,105,.12); }
+    img, svg { max-width: 100%; }
     h1, h2, h3, p { margin-top: 0; }
-    h1 { max-width: 900px; margin-bottom: 28px; font-size: clamp(3.65rem, 8.6vw, 8.2rem); line-height: .85; letter-spacing: -.085em; font-weight: 850; }
-    .hero-word { display: inline-block; color: var(--green); }
-    .subhead { max-width: 720px; margin-bottom: 32px; color: var(--muted); font-size: clamp(1.08rem, 2vw, 1.34rem); line-height: 1.55; }
+    .wrap { width: min(1136px, calc(100% - 48px)); margin: 0 auto; }
+    .skip { position: absolute; left: -999px; top: 8px; padding: 8px 12px; border-radius: 8px; background: var(--ink); color: #fff; }
+    .skip:focus { left: 8px; z-index: 50; }
+
+    /* buttons, tags */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 1px solid transparent; border-radius: 10px; text-decoration: none; font-size: .93rem; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; cursor: pointer; transition: background .15s, border-color .15s; }
+    .btn.small { min-height: 38px; padding: 0 14px; font-size: .88rem; }
+    .btn.primary { background: var(--moss); color: #fff; }
+    .btn.primary:hover { background: var(--moss-strong); }
+    .btn.secondary { border-color: var(--line-strong); background: var(--canvas); }
+    .btn.secondary:hover { border-color: var(--ink); }
+    .btn.lime { background: var(--lime); color: var(--ink); }
+    .btn.lime:hover { background: #d6ec8f; }
+    .btn.outline-inverse { border-color: var(--line-dark); color: #fff; }
+    .btn.outline-inverse:hover { border-color: var(--lime); }
+    .tag { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; border-radius: 6px; background: var(--moss-soft); color: var(--moss); font: 500 .72rem/1 var(--mono); white-space: nowrap; }
+    .tag.lime { background: var(--lime-soft); color: var(--moss-strong); }
+    .tag.neutral { border: 1px solid var(--line); background: var(--subtle); color: var(--text-2); }
+    .tag.inverse { background: #1b2b23; color: var(--lime); }
+    .kicker { display: block; margin-bottom: 14px; color: var(--moss); font: 500 .72rem/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .ico { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    .ico-box { display: grid; width: 40px; height: 40px; place-items: center; border-radius: 10px; background: var(--moss-soft); color: var(--moss); }
+
+    /* header */
+    .nav { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, .92); backdrop-filter: blur(12px); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 68px; }
+    .logo { display: inline-flex; align-items: center; color: var(--ink); text-decoration: none; }
+    .wordmark { display: block; width: auto; height: 30px; }
+    .wordmark .perched { fill: var(--moss); }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-links > a:not(.btn) { padding: 8px 12px; border-radius: 8px; color: var(--text-2); text-decoration: none; font-size: .9rem; font-weight: 500; }
+    .nav-links > a:not(.btn):hover { background: var(--subtle); color: var(--ink); }
+    .nav-links .btn { margin-left: 6px; }
+
+    /* hero */
+    .hero { padding: 80px 0 96px; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 64px; align-items: center; }
+    .hero-grid > *, .install-grid > *, .privacy-grid > *, .faq > *, .band > * { min-width: 0; }
+    .pill { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 26px; padding: 4px 14px 4px 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--subtle); color: var(--text-2); font-size: .84rem; }
+    h1 { margin-bottom: 22px; font-size: clamp(2.6rem, 5.2vw, 3.75rem); line-height: 1.06; letter-spacing: -.045em; font-weight: 650; }
+    .lead { margin-bottom: 32px; color: var(--text-2); font-size: 1.125rem; line-height: 1.62; }
     .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 8px; padding: 0 20px; border: 1px solid var(--ink); border-radius: 999px; text-decoration: none; font-weight: 820; }
-    .button.primary { background: var(--ink); color: #fff; }
-    .button.primary::after { content: "↗"; }
-    .button.secondary:hover { background: var(--white); }
-    .hero-note { padding: 24px 0 7px 22px; border-left: 1px solid var(--ink); }
-    .hero-note strong { display: block; margin-bottom: 24px; font-family: Georgia, serif; font-size: 2.4rem; line-height: 1; font-weight: 400; font-style: italic; }
-    .hero-note p { margin: 0; color: var(--muted); font-size: .87rem; line-height: 1.6; }
-    .strip { border-block: 1px solid var(--ink); background: var(--lime); }
-    .strip-inner { display: flex; gap: 28px; justify-content: space-between; padding: 14px 0; overflow: hidden; font-size: .72rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; white-space: nowrap; }
-    section.block { padding: 108px 0; border-bottom: 1px solid rgba(23,34,27,.13); }
-    .section-head { display: grid; grid-template-columns: .48fr 1fr; gap: 42px; margin-bottom: 54px; align-items: start; }
-    .kicker { color: var(--green); font-size: .74rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-    h2 { max-width: 800px; margin-bottom: 18px; font-size: clamp(2.4rem, 5.4vw, 5.1rem); line-height: .95; letter-spacing: -.07em; }
-    .section-copy { max-width: 680px; margin-bottom: 0; color: var(--muted); font-size: 1.06rem; line-height: 1.7; }
-    .install { background: var(--ink); color: #fff; }
-    .install .kicker { color: var(--lime); }
-    .install .section-copy { color: #b9c3bc; }
-    .code-window { overflow: hidden; border: 1px solid #465049; border-radius: 18px; background: #0f1612; box-shadow: 0 28px 80px rgba(0,0,0,.2); }
-    .code-top { display: flex; justify-content: space-between; align-items: center; min-height: 58px; padding: 0 18px; border-bottom: 1px solid #354038; color: #acb8b0; font-size: .73rem; }
-    .dots { letter-spacing: 4px; color: var(--coral); }
-    .copy { padding: 8px 12px; border: 1px solid #536158; border-radius: 8px; background: transparent; color: #fff; cursor: pointer; font-size: .74rem; font-weight: 750; }
+    .assure { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 18px 0 44px; padding: 0; list-style: none; color: var(--text-2); font-size: .82rem; }
+    .assure li { display: inline-flex; align-items: center; gap: 6px; }
+    .assure .ico { width: 16px; height: 16px; color: var(--moss); }
+    .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .fact strong { display: block; font-size: 1.75rem; font-weight: 650; letter-spacing: -.05em; }
+    .fact span { display: block; margin-top: 4px; color: var(--muted); font-size: .8rem; line-height: 1.4; }
+
+    /* product mock (hero + preview) */
+    .mock { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--canvas); box-shadow: var(--shadow); }
+    .mock-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .mock-bar .mini { width: 22px; height: 22px; flex: none; }
+    .select { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; font-size: .76rem; font-weight: 600; white-space: nowrap; }
+    .select .ico { width: 13px; height: 13px; color: var(--muted); }
+    .grow { flex: 1; }
+    .live { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: var(--moss-soft); color: var(--moss); font-size: .76rem; font-weight: 600; white-space: nowrap; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #2e9e5b; }
+    .mock-body { display: grid; gap: 16px; padding: 18px; }
+    .kpi-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .kpi { padding: 12px 14px; border-radius: 10px; background: var(--subtle); }
+    .kpi small { display: block; color: var(--muted); font-size: .74rem; }
+    .kpi b { font-size: 1.2rem; font-weight: 650; letter-spacing: -.04em; }
+    .kpi em { margin-left: 6px; color: var(--up); font-size: .74rem; font-style: normal; font-weight: 600; }
+    .legend { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: .74rem; }
+    .legend b { color: var(--ink); font-weight: 600; }
+    .legend i { display: inline-block; width: 14px; height: 3px; margin-right: 6px; border-radius: 2px; background: var(--moss); vertical-align: middle; }
+    .legend i.prev { background: var(--line-strong); }
+    .trend { display: block; width: 100%; height: auto; margin-top: 8px; }
+    .rank-head { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: .78rem; }
+    .rank-head b { font-weight: 600; }
+    .rank-head span { color: var(--muted); }
+    .rank-row { display: grid; grid-template-columns: 22px 104px minmax(0, 1fr) 36px 40px; gap: 12px; align-items: center; padding: 5px 0; font-size: .78rem; font-weight: 600; }
+    .rank-row .n { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 6px; background: var(--subtle); }
+    .rank-row:first-of-type .n { background: var(--lime); }
+    .rank-row .bar { height: 6px; border-radius: 9px; background: var(--subtle); }
+    .rank-row .bar i { display: block; height: 100%; border-radius: inherit; background: var(--moss); }
+    .rank-row .v { text-align: right; }
+    .rank-row .d { color: var(--up); text-align: right; font-weight: 500; }
+    .rank-row .d.down { color: var(--down); }
+    .promise { display: flex; gap: 14px; margin-top: 18px; padding-left: 4px; }
+    .promise::before { content: ""; width: 2px; flex: none; border-radius: 2px; background: var(--lime); }
+    .promise strong { display: block; font-size: .93rem; font-weight: 600; }
+    .promise span { color: var(--muted); font-size: .84rem; line-height: 1.5; }
+
+    /* sections */
+    section.block { padding: 112px 0; }
+    .block.subtle { background: var(--subtle); }
+    .block.tint { background: var(--tint); }
+    .block.ink { background: var(--ink); color: #fff; }
+    .block.moss { background: var(--moss); color: #fff; }
+    .head { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 456px); justify-content: space-between; align-items: end; gap: 48px; margin-bottom: 56px; }
+    h2 { margin: 0; font-size: clamp(2rem, 3.6vw, 2.5rem); line-height: 1.14; letter-spacing: -.035em; font-weight: 650; }
+    .head p { margin: 0; color: var(--text-2); font-size: 1.125rem; line-height: 1.6; }
+    .ink .kicker, .moss .kicker { color: var(--lime); }
+    .ink .head p { color: var(--muted-dark); }
+
+    .audiences { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+    .audience { padding-top: 22px; border-top: 1px solid var(--line-strong); }
+    .audience .ico { color: var(--moss); width: 22px; height: 22px; }
+    .audience h3, .feature h3 { margin: 14px 0 8px; font-size: 1.05rem; letter-spacing: -.02em; font-weight: 600; }
+    .audience p, .feature p { margin: 0; color: var(--text-2); font-size: .875rem; line-height: 1.55; }
+
+    /* install */
+    .install-grid { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 32px; align-items: start; }
+    .paths { display: grid; gap: 12px; }
+    .path { display: grid; gap: 8px; width: 100%; padding: 18px 20px; border: 1px solid var(--line-dark); border-radius: 12px; background: none; color: #fff; text-align: left; cursor: pointer; }
+    .path:hover { border-color: #4b5d53; }
+    .path[aria-selected="true"] { border-color: var(--lime); background: #1b2b23; }
+    .path-title { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: .95rem; }
+    .path-title .ico { color: var(--muted-dark); }
+    .path[aria-selected="true"] .path-title .ico { color: var(--lime); }
+    .path-title .tag { margin-left: auto; }
+    .path p { margin: 0; color: var(--muted-dark); font-size: .84rem; line-height: 1.55; }
+    .code-window { overflow: hidden; border: 1px solid var(--line-dark); border-radius: 14px; background: var(--code); }
+    .code-tabs { display: flex; align-items: flex-end; gap: 4px; padding: 10px 12px 0; border-bottom: 1px solid var(--line-dark); }
+    .code-tabs span { padding: 9px 12px 10px; color: #7d8d83; font: 500 .75rem/1 var(--mono); }
+    .code-tabs span.on { border-bottom: 2px solid var(--lime); color: #fff; }
+    .copy { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 8px auto; padding: 6px 10px; border: 1px solid var(--line-dark); border-radius: 7px; background: none; color: #fff; font-size: .76rem; font-weight: 600; cursor: pointer; }
     .copy:hover { border-color: var(--lime); color: var(--lime); }
-    pre { margin: 0; padding: 32px; overflow-x: auto; color: #dce9df; font: 500 .9rem/1.75 ui-monospace, SFMono-Regular, Consolas, monospace; tab-size: 2; }
-    .code-accent { color: var(--lime); }
-    .under-code { display: flex; gap: 30px; justify-content: space-between; margin-top: 20px; color: #aab5ae; font-size: .78rem; }
-    .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-    .value { min-height: 245px; padding: 30px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: rgba(255,253,247,.45); }
-    .value-num { display: block; margin-bottom: 55px; color: var(--green); font: italic 1.25rem Georgia, serif; }
-    .value h3 { margin-bottom: 12px; font-size: 1.25rem; letter-spacing: -.035em; }
-    .value p { margin: 0; color: var(--muted); font-size: .91rem; line-height: 1.65; }
-    .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .feature { min-height: 195px; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
-    .feature-icon { display: grid; width: 38px; height: 38px; margin-bottom: 28px; place-items: center; border-radius: 50%; background: var(--green); color: var(--lime); font-weight: 850; }
-    .feature h3 { margin-bottom: 9px; font-size: 1rem; }
-    .feature p { margin: 0; color: var(--muted); font-size: .84rem; line-height: 1.55; }
-    .steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-    .step { counter-increment: step; min-height: 285px; padding: 32px; background: var(--paper); }
-    .step::before { content: "0" counter(step); display: block; margin-bottom: 76px; color: var(--green); font-family: ui-monospace, monospace; }
-    .step h3 { margin-bottom: 12px; font-size: 1.5rem; letter-spacing: -.04em; }
-    .step p { color: var(--muted); line-height: 1.65; }
-    .preview-block { background: #dce9df; }
-    .dashboard { padding: 18px; border: 1px solid rgba(23,34,27,.25); border-radius: 22px; background: var(--paper); box-shadow: 0 38px 100px rgba(23,34,27,.18); }
-    .dash-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 8px 7px 24px; }
-    .dash-logo { font-weight: 850; letter-spacing: -.04em; }
-    .fake-select { padding: 9px 32px 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); font-size: .74rem; font-weight: 700; }
-    .dash-title { padding: 26px 6px 18px; }
-    .dash-title small { color: var(--green); font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
-    .dash-title h3 { max-width: 700px; margin: 10px 0 0; font-size: clamp(2rem, 5vw, 4.5rem); line-height: .95; letter-spacing: -.065em; }
-    .dash-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .dash-kpi { padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--white); }
-    .dash-kpi span { color: var(--muted); font-size: .65rem; font-weight: 750; text-transform: uppercase; }
-    .dash-kpi strong { display: block; margin-top: 13px; font-size: 1.65rem; letter-spacing: -.055em; }
-    .dash-grid { display: grid; grid-template-columns: 1.6fr .8fr; gap: 8px; margin-top: 8px; }
-    .dash-card { min-height: 235px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
-    .chart-bars { height: 160px; display: flex; align-items: end; gap: 7px; padding-top: 20px; border-bottom: 1px solid var(--line); background: repeating-linear-gradient(to bottom, transparent 0 39px, #eee9de 40px); }
-    .chart-bars i { flex: 1; min-width: 6px; border-radius: 4px 4px 0 0; background: var(--green); }
-    .chart-bars i:nth-child(3n) { background: var(--coral); }
-    .rank-list { display: grid; gap: 12px; padding-top: 16px; }
-    .rank-line { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: .75rem; font-weight: 700; }
-    .rank-line::after { content: ""; grid-column: 1 / -1; height: 5px; border-radius: 9px; background: linear-gradient(to right, var(--green) var(--w), #e5e1d6 var(--w)); }
-    .comparison-wrap { overflow-x: auto; border: 1px solid var(--line); }
-    .comparison { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--white); }
-    .comparison th, .comparison td { padding: 20px; border-bottom: 1px solid var(--line); text-align: center; font-size: .85rem; }
-    .comparison th:first-child, .comparison td:first-child { text-align: left; }
-    .comparison th { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; }
-    .comparison th.perch { background: var(--ink); color: var(--lime); }
-    .comparison td.perch { background: #edf3e9; font-weight: 800; }
-    .yes { color: var(--green); font-weight: 850; }
-    .limited { color: #9a502f; }
-    .privacy { color: #fff; background: var(--green); }
-    .privacy .kicker { color: var(--lime); }
-    .privacy .section-copy { color: #d2dfd6; }
-    .privacy-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: end; }
-    .privacy-list { display: grid; gap: 0; border-top: 1px solid rgba(255,255,255,.28); }
-    .privacy-item { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 17px 0; border-bottom: 1px solid rgba(255,255,255,.28); color: #edf5ef; }
-    .privacy-item span:first-child { color: var(--lime); }
-    .open-card { display: grid; grid-template-columns: 1fr auto; gap: 40px; padding: 52px; border-radius: 24px; background: var(--coral); color: #27140d; align-items: end; }
-    .open-card h2 { max-width: 780px; margin-bottom: 15px; }
-    .open-card p { max-width: 660px; margin-bottom: 0; line-height: 1.65; }
-    .open-links { display: grid; gap: 10px; min-width: 180px; }
-    .open-links a { display: flex; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid rgba(39,20,13,.35); text-decoration: none; font-weight: 800; }
-    .faq { display: grid; grid-template-columns: .62fr 1fr; gap: 70px; }
-    .faq h2 { position: sticky; top: 30px; }
-    .questions { border-top: 1px solid var(--line); }
+    .copy .ico { width: 14px; height: 14px; }
+    pre { margin: 0; padding: 26px 28px; overflow-x: auto; color: #dce9df; font: .84rem/1.75 var(--mono); tab-size: 2; }
+    .c-com { color: #7d8d83; }
+    .c-attr { color: #9fc4f0; }
+    .c-str { color: var(--lime); }
+    .code-foot { display: flex; justify-content: space-between; gap: 20px; padding: 14px 28px; border-top: 1px solid var(--line-dark); color: var(--muted-dark); font-size: .78rem; }
+
+    /* values */
+    .values { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .value { padding: 28px; border: 1px solid var(--line); border-radius: 14px; background: var(--canvas); }
+    .value-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .value-top span { color: var(--muted); font: .74rem var(--mono); }
+    .value h3 { margin-bottom: 8px; font-size: 1.05rem; letter-spacing: -.02em; font-weight: 600; }
+    .value p { margin: 0; color: var(--text-2); font-size: .875rem; line-height: 1.6; }
+
+    .features { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 44px 24px; }
+    .feature { display: flex; flex-direction: column; align-items: flex-start; padding-top: 20px; border-top: 1px solid var(--line-strong); }
+    .feature .ico { color: var(--moss); width: 22px; height: 22px; }
+    .feature .tag { margin-top: 14px; }
+
+    /* how */
+    .pipeline { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: stretch; margin-bottom: 56px; padding: 28px; border: 1px solid var(--line); border-radius: 18px; background: var(--subtle); }
+    .node { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--canvas); }
+    .node.dark { border-color: var(--ink); background: var(--ink); color: #fff; }
+    .node-title { display: flex; align-items: center; gap: 10px; }
+    .node-title .ico-box { width: 34px; height: 34px; border-radius: 9px; }
+    .node.dark .ico-box { background: #1b2b23; color: var(--lime); }
+    .node-title b { display: block; font-size: .93rem; font-weight: 600; }
+    .node-title small { display: block; color: var(--muted); font: .7rem var(--mono); }
+    .node.dark small { color: var(--muted-dark); }
+    .node p { flex: 1; margin: 0; color: var(--text-2); font-size: .84rem; line-height: 1.5; }
+    .node.dark p { color: var(--muted-dark); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .link { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0 8px; color: var(--moss); font: .72rem var(--mono); text-align: center; }
+    .link small { color: var(--muted); font-family: inherit; }
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+    .rail { display: flex; align-items: center; margin-bottom: 18px; }
+    .rail b { display: grid; width: 30px; height: 30px; place-items: center; border: 1px solid var(--line-strong); border-radius: 50%; font-size: .8rem; font-weight: 600; }
+    .step:first-child .rail b { border-color: var(--moss); background: var(--moss); color: #fff; }
+    .rail::after { content: ""; flex: 1; height: 1.5px; background: var(--line-strong); }
+    .step h3 { margin: 8px 0 8px; font-size: 1.3rem; letter-spacing: -.03em; font-weight: 600; }
+    .step p { margin: 0; color: var(--text-2); line-height: 1.6; }
+
+    /* preview */
+    .preview .mock-bar { padding: 14px 20px; flex-wrap: wrap; }
+    .filter { border-color: var(--lime); background: var(--lime-soft); }
+    .pv-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+    .pv-kpis div { padding: 18px 22px; border-right: 1px solid var(--line); }
+    .pv-kpis div:last-child { border-right: 0; }
+    .pv-kpis .on { background: rgba(240, 247, 217, .7); box-shadow: inset 0 3px 0 var(--moss); }
+    .pv-kpis small { display: block; color: var(--muted); font-size: .78rem; }
+    .pv-kpis .on small { color: var(--ink); font-weight: 600; }
+    .pv-kpis b { font-size: 1.6rem; font-weight: 650; letter-spacing: -.05em; }
+    .pv-kpis em { margin-left: 8px; color: var(--up); font-size: .76rem; font-style: normal; font-weight: 600; }
+    .pv-kpis em.down { color: var(--down); }
+    .pv-chart { position: relative; padding: 20px 24px 16px; border-bottom: 1px solid var(--line); }
+    .pv-chart .legend { margin-bottom: 10px; }
+    .tip { position: absolute; top: 46px; left: 58%; padding: 8px 10px; border-radius: 8px; background: var(--ink); color: #fff; font-size: .74rem; line-height: 1.45; }
+    .tip span { display: block; color: var(--lime); }
+    .axis { display: flex; justify-content: space-between; margin-top: 8px; color: var(--muted); font-size: .74rem; }
+    .panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .panel { padding: 18px 22px 22px; border-right: 1px solid var(--line); }
+    .panel:last-child { border-right: 0; }
+    .panel-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .panel-head b { font-size: .9rem; font-weight: 600; }
+    .seg { display: inline-flex; margin-left: auto; padding: 2px; border-radius: 8px; background: var(--subtle); }
+    .seg span { padding: 4px 8px; border-radius: 6px; color: var(--muted); font-size: .72rem; }
+    .seg span.on { border: 1px solid var(--line); background: var(--canvas); color: var(--ink); }
+    .prow { position: relative; isolation: isolate; display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 7px 10px; font-size: .78rem; font-weight: 600; }
+    .prow > i { position: absolute; inset: 0 auto 0 0; z-index: -1; border-radius: 6px; background: var(--moss-soft); }
+    .prow .x { margin-left: auto; color: var(--muted); font-weight: 500; }
+    .prow .tag { height: 18px; font-size: .66rem; }
+    .callouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 48px; }
+    .callouts .ico { color: var(--moss); }
+    .callouts h3 { margin: 10px 0 6px; font-size: .95rem; font-weight: 600; }
+    .callouts p { margin: 0; color: var(--text-2); font-size: .86rem; line-height: 1.55; }
+    .center { display: flex; justify-content: center; margin-top: 40px; }
+
+    /* compare */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+    table { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--canvas); font-size: .875rem; }
+    th, td { padding: 18px 22px; border-top: 1px solid var(--line); text-align: left; }
+    thead th { border-top: 0; background: var(--subtle); color: var(--muted); font: 500 .74rem var(--mono); }
+    thead th.perch { background: var(--ink); color: #fff; font: 600 .93rem/1 inherit; font-family: inherit; }
+    thead th.perch span { display: inline-flex; align-items: center; gap: 8px; }
+    thead th.perch svg { width: 20px; height: 20px; }
+    tbody th { width: 300px; font-weight: 600; }
+    td.perch { background: rgba(227, 238, 230, .55); font-weight: 600; }
+    td span { display: inline-flex; align-items: center; gap: 8px; }
+    td .ico { width: 16px; height: 16px; }
+    .yes .ico { color: var(--moss); }
+    .some .ico { color: var(--coral); }
+    .no { color: var(--muted); }
+    .note { margin: 18px 0 0; color: var(--muted); font-size: .78rem; }
+
+    /* privacy */
+    .privacy-grid { display: grid; grid-template-columns: minmax(0, 560px) minmax(0, 1fr); gap: 72px; align-items: end; }
+    .moss h2 { color: #fff; }
+    .moss .lead2 { margin: 16px 0 0; color: #fff; font-size: 1.125rem; line-height: 1.6; }
+    .checklist { margin: 0; padding: 0; list-style: none; border-top: 1px solid rgba(255, 255, 255, .28); }
+    .checklist li { display: flex; align-items: center; gap: 12px; padding: 15px 0; border-bottom: 1px solid rgba(255, 255, 255, .28); }
+    .checklist .ico { color: var(--lime); }
+    .policy { display: flex; align-items: center; gap: 32px; margin-top: 48px; padding: 24px 28px; border-radius: 14px; background: var(--moss-strong); }
+    .policy b { display: block; margin-bottom: 6px; font-weight: 600; }
+    .policy p { margin: 0; color: #c4d2c8; font-size: .875rem; line-height: 1.55; }
+
+    /* faq */
+    .faq { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px; align-items: start; }
+    .faq-head { position: sticky; top: 100px; }
+    .faq-head p { margin: 14px 0 0; color: var(--text-2); line-height: 1.6; }
+    .questions { border-top: 1px solid var(--line-strong); }
     details { border-bottom: 1px solid var(--line); }
-    summary { position: relative; padding: 24px 42px 24px 0; cursor: pointer; list-style: none; font-size: 1.06rem; font-weight: 780; }
+    summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px 0; cursor: pointer; list-style: none; font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; }
     summary::-webkit-details-marker { display: none; }
-    summary::after { content: "+"; position: absolute; right: 4px; font-size: 1.45rem; font-weight: 400; }
-    details[open] summary::after { content: "–"; }
-    details p { max-width: 650px; padding: 0 42px 24px 0; margin: 0; color: var(--muted); line-height: 1.7; }
-    footer { padding: 34px 0; background: var(--ink); color: #fff; }
-    .footer-inner { display: flex; justify-content: space-between; gap: 30px; align-items: center; }
-    .footer-links { display: flex; flex-wrap: wrap; gap: 22px; color: #bdc8c1; font-size: .78rem; }
-    .footer-links a { text-decoration: none; }
-    @media (max-width: 900px) {
-      .hero-grid, .privacy-grid { grid-template-columns: 1fr; }
-      .hero-note { max-width: 430px; }
-      .section-head, .faq { grid-template-columns: 1fr; gap: 20px; }
-      .faq h2 { position: static; }
-      .value-grid { grid-template-columns: repeat(2, 1fr); }
-      .feature-grid { grid-template-columns: repeat(2, 1fr); }
-      .dash-kpis { grid-template-columns: repeat(3, 1fr); }
-      .open-card { grid-template-columns: 1fr; }
+    summary .ico { color: var(--text-2); transition: transform .15s; }
+    details[open] summary .ico { transform: rotate(180deg); }
+    details p { margin: 0; padding: 0 48px 24px 0; color: var(--text-2); line-height: 1.65; }
+    code { padding: 1px 5px; border-radius: 5px; background: var(--subtle); font: .86em var(--mono); }
+
+    /* closing band */
+    .band { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 80px; align-items: end; }
+    .band h2 { margin: 0 0 18px; color: #fff; font-size: clamp(2.2rem, 4.4vw, 3rem); line-height: 1.12; }
+    .band p { max-width: 620px; margin: 0 0 32px; color: var(--muted-dark); font-size: 1.125rem; line-height: 1.6; }
+    .band-links { border-top: 1px solid var(--line-dark); }
+    .band-links a { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--line-dark); text-decoration: none; font-weight: 600; }
+    .band-links a:hover { color: var(--lime); }
+    .band-links .ico { color: var(--lime); width: 18px; height: 18px; }
+
+    footer { padding: 64px 0 40px; }
+    .foot-grid { display: grid; grid-template-columns: 380px repeat(3, minmax(0, 1fr)); gap: 40px; }
+    .foot-grid p { margin: 14px 0 0; color: var(--text-2); font-size: .875rem; line-height: 1.6; }
+    .foot-col h3 { margin: 0 0 14px; color: var(--muted); font: 500 .72rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .foot-col a { display: block; padding: 6px 0; text-decoration: none; font-size: .875rem; }
+    .foot-col a:hover { color: var(--moss); }
+    .foot-base { display: flex; justify-content: space-between; gap: 24px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+
+    @media (max-width: 1080px) {
+      .hero-grid, .install-grid, .privacy-grid, .faq, .band { grid-template-columns: 1fr; }
+      .head { grid-template-columns: 1fr; gap: 16px; }
+      .audiences, .callouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .pipeline { grid-template-columns: 1fr; gap: 8px; }
+      .link { flex-direction: row; padding: 6px 0; }
+      .link .ico { transform: rotate(90deg); }
+      .panels { grid-template-columns: 1fr; }
+      .panel { border-right: 0; border-bottom: 1px solid var(--line); }
+      .pv-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .faq-head { position: static; }
+      .foot-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 760px) {
+      .nav-links > a:not(.btn), .nav-links .btn.secondary { display: none; }
     }
     @media (max-width: 640px) {
-      .wrap { width: min(100% - 28px, 1180px); }
-      .nav-inner { height: 66px; }
-      .nav-links a:not(.nav-cta) { display: none; }
-      .hero { padding: 66px 0 55px; }
-      .hero-grid { gap: 42px; }
-      h1 { font-size: clamp(3.4rem, 19vw, 5.4rem); }
+      .wrap { width: min(100% - 40px, 1136px); }
+      .hero { padding: 40px 0 56px; }
+      h1 { font-size: 2.5rem; }
+      .lead { font-size: 1rem; }
+      .actions .btn { width: 100%; }
+      .facts { grid-template-columns: 1fr 1fr; gap: 18px 16px; }
       section.block { padding: 76px 0; }
-      .value-grid, .feature-grid, .steps { grid-template-columns: 1fr; }
-      .value { min-height: 210px; }
-      .value-num { margin-bottom: 36px; }
-      .under-code { flex-direction: column; gap: 7px; }
-      pre { padding: 22px; font-size: .76rem; }
-      .dash-kpis { grid-template-columns: repeat(2, 1fr); }
-      .dash-grid { grid-template-columns: 1fr; }
-      .dash-kpi:last-child { display: none; }
-      .open-card { padding: 30px; border-radius: 18px; }
-      .footer-inner { align-items: flex-start; flex-direction: column; }
+      .values, .steps, .audiences, .features, .callouts { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: 1fr 1fr; }
+      .mock-bar { flex-wrap: wrap; }
+      .hero .mock-bar .select + .select { display: none; }
+      .kpi-row .kpi:last-child { display: none; }
+      .rank-row { grid-template-columns: 22px minmax(0, 1fr) 36px 40px; }
+      .rank-row .bar { display: none; }
+      .pv-kpis { grid-template-columns: 1fr 1fr; }
+      .pv-kpis div:nth-child(n + 5) { display: none; }
+      .preview .mock-bar .select:not(:first-of-type), .preview .mock-bar .filter { display: none; }
+      .tip { display: none; }
+      pre { padding: 20px; font-size: .74rem; }
+      .code-foot { flex-direction: column; gap: 4px; padding: 14px 20px; }
+      .policy { flex-direction: column; align-items: flex-start; }
+      .foot-grid { grid-template-columns: 1fr; }
+      .foot-base { flex-direction: column; }
     }
     @media (prefers-reduced-motion: reduce) {
       :root { scroll-behavior: auto; }
@@ -195,17 +361,52 @@
   </style>
 </head>
 <body>
+  <a class="skip" href="#top">Skip to content</a>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+    <symbol id="i-activity" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
+    <symbol id="i-percent" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+    <symbol id="i-bot" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V4"/><circle cx="12" cy="3" r="1"/><line x1="9" y1="13" x2="9" y2="15"/><line x1="15" y1="13" x2="15" y2="15"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></symbol>
+    <symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
+    <symbol id="i-feather" viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></symbol>
+    <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="i-pointer" viewBox="0 0 24 24"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  </svg>
+
   <header class="nav">
     <div class="wrap nav-inner">
-      <a class="logo" href="#top" aria-label="Perch home">
-        <span class="logo-mark" aria-hidden="true">P</span>
-        <span>Perch</span>
-      </a>
+      <a class="logo" href="#top"><!-- logo --><svg class="wordmark" viewBox="3 16 165 81" role="img" aria-label="Perch"><path fill="currentColor" d="M3.86 95.57V47.57H13.41V53.43H13.84C14.27 52.5 14.88 51.54 15.68 50.57C16.5 49.59 17.56 48.77 18.86 48.12C20.18 47.45 21.82 47.12 23.77 47.12C26.32 47.12 28.67 47.78 30.82 49.12C32.97 50.43 34.69 52.43 35.98 55.09C37.27 57.75 37.91 61.07 37.91 65.07C37.91 68.96 37.28 72.25 36.02 74.93C34.78 77.6 33.08 79.62 30.93 81C28.8 82.37 26.4 83.05 23.75 83.05C21.87 83.05 20.27 82.74 18.95 82.12C17.65 81.5 16.58 80.71 15.75 79.78C14.92 78.82 14.28 77.86 13.84 76.89H13.55V95.57H3.86ZM13.34 65.03C13.34 67.1 13.63 68.91 14.2 70.46C14.78 72 15.61 73.21 16.7 74.07C17.8 74.92 19.12 75.34 20.68 75.34C22.26 75.34 23.59 74.91 24.68 74.05C25.77 73.17 26.6 71.96 27.16 70.41C27.73 68.85 28.02 67.06 28.02 65.03C28.02 63.01 27.74 61.24 27.18 59.71C26.62 58.18 25.8 56.98 24.7 56.12C23.61 55.25 22.27 54.82 20.68 54.82C19.11 54.82 17.77 55.24 16.68 56.07C15.61 56.9 14.78 58.09 14.2 59.62C13.63 61.15 13.34 62.95 13.34 65.03ZM57.71 83.16C54.12 83.16 51.03 82.43 48.44 80.98C45.86 79.51 43.88 77.43 42.49 74.75C41.09 72.06 40.39 68.87 40.39 65.18C40.39 61.59 41.09 58.44 42.49 55.73C43.88 53.02 45.84 50.9 48.37 49.39C50.92 47.87 53.9 47.12 57.33 47.12C59.63 47.12 61.77 47.49 63.76 48.23C65.76 48.96 67.5 50.06 68.99 51.53C70.49 53 71.65 54.84 72.49 57.07C73.32 59.28 73.74 61.87 73.74 64.84V67.5H44.26V61.5H64.62C64.62 60.11 64.32 58.87 63.71 57.8C63.11 56.72 62.27 55.88 61.19 55.28C60.13 54.65 58.89 54.34 57.49 54.34C56.02 54.34 54.71 54.68 53.58 55.37C52.46 56.03 51.58 56.93 50.94 58.07C50.3 59.19 49.98 60.44 49.96 61.82V67.53C49.96 69.25 50.28 70.75 50.92 72C51.57 73.26 52.49 74.23 53.67 74.91C54.85 75.59 56.25 75.93 57.87 75.93C58.95 75.93 59.93 75.78 60.83 75.48C61.72 75.18 62.49 74.72 63.12 74.12C63.76 73.51 64.24 72.77 64.58 71.89L73.53 72.48C73.08 74.63 72.14 76.51 70.74 78.12C69.34 79.71 67.54 80.95 65.33 81.84C63.13 82.72 60.59 83.16 57.71 83.16ZM77.49 82.48V47.57H86.88V53.66H87.24C87.88 51.5 88.95 49.86 90.45 48.75C91.95 47.63 93.68 47.07 95.63 47.07C96.11 47.07 96.64 47.1 97.2 47.16C97.76 47.22 98.25 47.31 98.68 47.41V56C98.22 55.87 97.59 55.75 96.79 55.64C95.99 55.53 95.25 55.48 94.58 55.48C93.16 55.48 91.89 55.79 90.77 56.41C89.66 57.02 88.78 57.87 88.13 58.96C87.49 60.05 87.18 61.31 87.18 62.73V82.48H77.49ZM115.27 83.16C111.69 83.16 108.62 82.4 106.04 80.89C103.48 79.36 101.51 77.24 100.13 74.53C98.77 71.81 98.09 68.69 98.09 65.16C98.09 61.59 98.78 58.45 100.16 55.75C101.55 53.04 103.53 50.93 106.09 49.41C108.65 47.88 111.69 47.12 115.22 47.12C118.27 47.12 120.94 47.67 123.22 48.78C125.51 49.88 127.32 51.43 128.66 53.43C129.99 55.43 130.72 57.78 130.86 60.48H121.72C121.47 58.74 120.78 57.34 119.68 56.28C118.59 55.2 117.16 54.66 115.38 54.66C113.88 54.66 112.57 55.07 111.45 55.89C110.34 56.69 109.48 57.87 108.86 59.41C108.24 60.96 107.93 62.83 107.93 65.03C107.93 67.25 108.23 69.15 108.84 70.71C109.46 72.27 110.33 73.46 111.45 74.28C112.57 75.09 113.88 75.5 115.38 75.5C116.49 75.5 117.48 75.28 118.36 74.82C119.25 74.37 119.99 73.71 120.56 72.84C121.16 71.96 121.54 70.91 121.72 69.68H130.86C130.71 72.35 129.98 74.7 128.68 76.73C127.39 78.75 125.61 80.32 123.34 81.46C121.06 82.59 118.38 83.16 115.27 83.16ZM144.18 62.3V82.48H134.5V35.93H143.91V53.73H144.32C145.1 51.67 146.38 50.06 148.13 48.89C149.89 47.71 152.1 47.12 154.75 47.12C157.17 47.12 159.29 47.65 161.09 48.71C162.91 49.75 164.32 51.26 165.32 53.23C166.33 55.18 166.83 57.53 166.82 60.25V82.48H157.13V61.98C157.15 59.83 156.6 58.15 155.5 56.96C154.41 55.76 152.88 55.16 150.91 55.16C149.59 55.16 148.42 55.44 147.41 56C146.41 56.56 145.62 57.38 145.04 58.46C144.48 59.52 144.2 60.8 144.18 62.3Z"/><circle class="perched" cx="140.08" cy="24.64" r="7.36"/></svg><!-- /logo --></a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="./dashboard/?demo" data-perch-cta="demo-nav">Demo</a>
         <a href="#comparison">Compare</a>
         <a href="#faq">FAQ</a>
-        <a class="nav-cta" href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md" data-perch-cta="get-started-nav">Get started</a>
+        <a class="btn small secondary" href="https://github.com/tanzir71/perch" data-perch-cta="github-nav">GitHub</a>
+        <a class="btn small primary" href="https://github.com/tanzir71/perch/blob/main/INTEGRATION.md" data-perch-cta="get-started-nav">Get started</a>
       </nav>
     </div>
   </header>
@@ -214,251 +415,385 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <span class="badge"><i class="pulse" aria-hidden="true"></i> Privacy-first · open source</span>
-          <h1>A quiet <span class="hero-word">vantage point</span> over all your sites.</h1>
-          <p class="subhead">Cookieless, self-hostable analytics for landing pages—one tiny script and one calm dashboard for every project you run.</p>
+          <span class="pill"><span class="tag">Open source</span>A quiet vantage point over all your sites</span>
+          <h1>Cookieless analytics for every site you run.</h1>
+          <p class="lead">Perch is privacy-first, self-hostable web analytics for landing pages and small site portfolios. One tiny script and one calm dashboard for every project you run, on your own Cloudflare account, with every event kept and nothing sampled.</p>
           <div class="actions">
-            <a class="button primary" href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md" data-perch-cta="get-started-hero">Get started</a>
-            <a class="button secondary" href="#dashboard-preview" data-perch-cta="demo-hero">See the metrics</a>
+            <a class="btn primary" href="https://github.com/tanzir71/perch/blob/main/INTEGRATION.md" data-perch-cta="get-started-hero">Get started</a>
+            <a class="btn secondary" href="./dashboard/?demo" data-perch-cta="demo-hero">Open the live demo</a>
+          </div>
+          <ul class="assure">
+            <li><svg class="ico"><use href="#i-check"/></svg>MIT licensed</li>
+            <li><svg class="ico"><use href="#i-check"/></svg>Self-hosted on Cloudflare</li>
+            <li><svg class="ico"><use href="#i-check"/></svg>Agent-ready setup guide</li>
+          </ul>
+          <div class="facts" aria-label="Product highlights">
+            <div class="fact"><strong>&lt;3 KB</strong><span>gzipped tracker</span></div>
+            <div class="fact"><strong>0</strong><span>cookies or stored IPs</span></div>
+            <div class="fact"><strong>100%</strong><span>of events, never sampled</span></div>
+            <div class="fact"><strong>1</strong><span>dashboard for every project</span></div>
           </div>
         </div>
-        <aside class="hero-note" aria-label="Perch promise">
-          <strong>“Know what’s working without watching people.”</strong>
-          <p>No cookies. No individual profiles. No sprawling setup. Just honest signals from the sites you care about.</p>
-        </aside>
+        <div>
+          <div class="mock" role="img" aria-label="The Perch portfolio dashboard: visitors, pageviews and CTA conversion with changes against the previous period, and a ranking of sites by visitors">
+            <div class="mock-bar">
+              <!-- mini --><svg class="mini" viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="24" fill="#12201A"/><g transform="translate(0 -3)"><path fill="#C8E474" d="M63 69H24A39 39 0 0 1 63 30Z"/><circle fill="#C8E474" cx="63" cy="31.5" r="9"/><path fill="#C8E474" d="M70.8 27.3 81 31.5 70.8 35.7Z"/><rect fill="#fff" x="15" y="75" width="66" height="5.25" rx="2.625"/></g></svg><!-- /mini -->
+              <span class="select"><svg class="ico"><use href="#i-grid"/></svg>All projects<svg class="ico"><use href="#i-chevron"/></svg></span>
+              <span class="select"><svg class="ico"><use href="#i-cal"/></svg>Last 30 days<svg class="ico"><use href="#i-chevron"/></svg></span>
+              <span class="grow"></span>
+              <span class="live"><i class="dot"></i>37 visitors now</span>
+            </div>
+            <div class="mock-body">
+              <div class="kpi-row">
+                <div class="kpi"><small>Unique visitors</small><b>12,801</b><em>+14%</em></div>
+                <div class="kpi"><small>Pageviews</small><b>18,492</b><em>+9%</em></div>
+                <div class="kpi"><small>CTA conversion</small><b>6.8%</b><em>+1.2 pt</em></div>
+              </div>
+              <div>
+                <div class="legend"><b>Unique visitors</b><span><i></i>This period</span><span><i class="prev"></i>Previous 30 days</span></div>
+                <svg class="trend" viewBox="0 0 488 116" aria-hidden="true">
+                  <polygon fill="#f0f7d9" points="0,116 0,85.6 16.8,79.8 33.7,82.9 50.5,74.1 67.3,77 84.1,69.1 101,72.7 117.8,66.3 134.6,70.6 151.4,59.7 168.3,63.7 185.1,53.6 201.9,58.6 218.8,50.6 235.6,52.4 252.4,43.4 269.2,48.1 286.1,40.2 302.9,45.1 319.7,36.9 336.6,41.9 353.4,32.2 370.2,34.7 387,24.5 403.9,30.5 420.7,19.3 437.5,22.5 454.3,14.4 471.2,18.5 488,8.9 488,116"/>
+                  <polyline fill="none" stroke="#cfccc1" stroke-width="1.5" stroke-dasharray="4 4" points="0,88.4 16.8,87 33.7,84.2 50.5,85.6 67.3,81.4 84.1,82.9 101,78.5 117.8,79.8 134.6,77 151.4,78.5 168.3,74.1 185.1,75.6 201.9,72.7 218.8,70 235.6,71.3 252.4,68.4 269.2,69.9 286.1,66.9 302.9,68.4 319.7,65.5 336.6,67 353.4,63.9 370.2,65.4 387,62.5 403.9,63.9 420.7,60.8 437.5,62.2 454.3,59.4 471.2,60.8 488,57.8"/>
+                  <polyline fill="none" stroke="#2f6045" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round" points="0,85.6 16.8,79.8 33.7,82.9 50.5,74.1 67.3,77 84.1,69.1 101,72.7 117.8,66.3 134.6,70.6 151.4,59.7 168.3,63.7 185.1,53.6 201.9,58.6 218.8,50.6 235.6,52.4 252.4,43.4 269.2,48.1 286.1,40.2 302.9,45.1 319.7,36.9 336.6,41.9 353.4,32.2 370.2,34.7 387,24.5 403.9,30.5 420.7,19.3 437.5,22.5 454.3,14.4 471.2,18.5 488,8.9"/>
+                </svg>
+              </div>
+              <div>
+                <div class="rank-head"><b>Which site is winning</b><span>Visitors · vs previous</span></div>
+                <div class="rank-row"><span class="n">1</span><span>Studio launch</span><span class="bar"><i style="width:100%"></i></span><span class="v">6.4k</span><span class="d">+22%</span></div>
+                <div class="rank-row"><span class="n">2</span><span>Field notes</span><span class="bar"><i style="width:72%;opacity:.55"></i></span><span class="v">4.6k</span><span class="d">+8%</span></div>
+                <div class="rank-row"><span class="n">3</span><span>Tiny tools</span><span class="bar"><i style="width:49%;opacity:.55"></i></span><span class="v">3.1k</span><span class="d down">−4%</span></div>
+                <div class="rank-row"><span class="n">4</span><span>Portfolio</span><span class="bar"><i style="width:31%;opacity:.55"></i></span><span class="v">2.0k</span><span class="d">+3%</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="promise"><div><strong>“Know what’s working without watching people.”</strong><span>No cookies. No individual profiles. No sprawling setup. Just honest signals from the sites you care about.</span></div></div>
+        </div>
       </div>
     </section>
 
-    <div class="strip" aria-label="Product highlights">
-      <div class="wrap strip-inner">
-        <span>Full data · no sampling</span>
-        <span>Under 3 KB gzipped</span>
-        <span>Own your data</span>
-        <span>One dashboard · every project</span>
-      </div>
-    </div>
-
-    <section class="block install" id="install">
+    <section class="block subtle" id="audience">
       <div class="wrap">
-        <header class="section-head">
-          <span class="kicker">One-line install</span>
-          <div>
-            <h2>One tag. The whole picture.</h2>
-            <p class="section-copy">Add the tracker once. Perch handles pageviews, campaigns, outbound links, and the CTA signals that tell you whether a landing page is doing its job.</p>
-          </div>
+        <header class="head">
+          <div><span class="kicker">Who it’s for</span><h2>Built for people who run more than one site.</h2></div>
+          <p>Perch is shaped for portfolios of small sites and landing pages, not one enterprise property with a data team behind it.</p>
         </header>
-        <div class="code-window">
-          <div class="code-top">
-            <span class="dots" aria-hidden="true">● ● ●</span>
-            <button class="copy" id="copy-install" type="button">Copy snippet</button>
-          </div>
-          <pre id="install-code" aria-label="Perch installation snippet">&lt;script
-  src="<span class="code-accent">https://YOUR-USER.github.io/YOUR-REPO/perch.min.js</span>"
-  data-endpoint="<span class="code-accent">https://YOUR-WORKER.workers.dev/collect</span>"
-  data-project-id="<span class="code-accent">my-project</span>"
-  defer
-&gt;&lt;/script&gt;</pre>
+        <div class="audiences">
+          <article class="audience"><svg class="ico"><use href="#i-code"/></svg><h3>Indie makers</h3><p>Launching side projects? See which page is catching on, without a cookie banner in the way.</p></article>
+          <article class="audience"><svg class="ico"><use href="#i-briefcase"/></svg><h3>Agencies &amp; freelancers</h3><p>One Perch for every client site: one sign-in, one project dropdown, CSV export per project.</p></article>
+          <article class="audience"><svg class="ico"><use href="#i-layers"/></svg><h3>Small product teams</h3><p>Track the CTAs that matter on launch pages and read campaign results without a GA4 learning curve.</p></article>
+          <article class="audience"><svg class="ico"><use href="#i-shield"/></svg><h3>Privacy-minded orgs</h3><p>Visitor data stays in your Cloudflare account. No raw IPs stored, and identifiers reset daily.</p></article>
         </div>
-        <div class="under-code">
-          <span>Vanilla JavaScript · no runtime dependencies</span>
-          <span>Works on any static page or framework</span>
+      </div>
+    </section>
+
+    <section class="block ink" id="install">
+      <div class="wrap">
+        <header class="head">
+          <div><span class="kicker">One-line install</span><h2>One tag. The whole picture.</h2></div>
+          <p>Add the tracker once. Perch handles pageviews, campaigns, outbound links, and the CTA signals that tell you whether a landing page is doing its job.</p>
+        </header>
+        <div class="install-grid">
+          <div class="paths" role="tablist" aria-label="Ways to install">
+            <button class="path" type="button" role="tab" aria-selected="true" data-path="tag">
+              <span class="path-title"><svg class="ico"><use href="#i-terminal"/></svg>Copy the tag<span class="tag inverse">Fastest</span></span>
+              <p>Already have a Perch Worker? Paste one tag before &lt;/body&gt;, then mark your CTAs with data-perch-cta.</p>
+            </button>
+            <button class="path" type="button" role="tab" aria-selected="false" data-path="agent">
+              <span class="path-title"><svg class="ico"><use href="#i-bot"/></svg>Ask your AI agent<span class="tag inverse">Agent-ready</span></span>
+              <p>Hand INTEGRATION.md to Claude, Copilot, Cursor or any coding agent. It deploys, instruments, verifies, and hands you the dashboard URL.</p>
+            </button>
+            <button class="path" type="button" role="tab" aria-selected="false" data-path="deploy">
+              <span class="path-title"><svg class="ico"><use href="#i-server"/></svg>Deploy the backend<span class="tag inverse">First time</span></span>
+              <p>One click with the Deploy to Cloudflare button, or a few Wrangler commands. Cloudflare Access gates the dashboard.</p>
+            </button>
+          </div>
+          <div class="code-window">
+            <div class="code-tabs"><span class="on" id="code-file">index.html</span><button class="copy" id="copy-install" type="button"><svg class="ico"><use href="#i-copy"/></svg>Copy snippet</button></div>
+<pre id="install-code" aria-label="Perch installation snippet" data-panel="tag"><span class="c-com">&lt;!-- Add once, just before &lt;/body&gt; --&gt;</span>
+&lt;script
+  <span class="c-attr">src</span>=<span class="c-str">"https://perch.YOUR-ACCOUNT.workers.dev/perch.js"</span>
+  <span class="c-attr">data-project-id</span>=<span class="c-str">"my-project"</span>
+  <span class="c-attr">defer</span>
+&gt;&lt;/script&gt;
+
+<span class="c-com">&lt;!-- Mark the clicks that matter --&gt;</span>
+&lt;a <span class="c-attr">href</span>=<span class="c-str">"/signup"</span> <span class="c-attr">data-perch-cta</span>=<span class="c-str">"signup-hero"</span>&gt;Start free&lt;/a&gt;</pre>
+<pre data-panel="agent" hidden><span class="c-com"># Paste into Claude, Copilot, Cursor or any coding agent</span>
+Add Perch analytics to this site.
+1. Read https://github.com/tanzir71/perch/blob/main/INTEGRATION.md
+   and follow it from top to bottom.
+2. Reuse my Perch Worker if I have one; otherwise deploy it.
+3. Register this site, add the tag once, and mark the main CTAs.
+4. Run the verification checklist and hand me the dashboard URL.</pre>
+<pre data-panel="deploy" hidden><span class="c-com"># One click: https://deploy.workers.cloudflare.com/?url=https://github.com/tanzir71/perch</span>
+<span class="c-com"># Or from a clone of the repository:</span>
+npm install
+npx wrangler d1 create perch          <span class="c-com"># paste the id into wrangler.toml</span>
+npx wrangler d1 migrations apply DB --remote
+npx wrangler secret put SALT           <span class="c-com"># a long random string</span>
+npm run deploy                         <span class="c-com"># prints your Worker URL</span></pre>
+            <div class="code-foot"><span>Vanilla JavaScript · no runtime dependencies</span><span>Works on any static page or framework</span></div>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="block" id="why">
       <div class="wrap">
-        <header class="section-head">
-          <span class="kicker">Why Perch</span>
-          <div>
-            <h2>Simple where it should be. Capable where it counts.</h2>
-            <p class="section-copy">Built for indie makers, small teams, and agencies who run more than one landing page—and want answers without surrendering visitor data.</p>
-          </div>
+        <header class="head">
+          <div><span class="kicker">Why Perch</span><h2>Simple where it should be. Capable where it counts.</h2></div>
+          <p>Built for indie makers, small teams, and agencies who run more than one landing page, and want answers without surrendering visitor data.</p>
         </header>
-        <div class="value-grid">
-          <article class="value"><span class="value-num">01</span><h3>Full data, never sampled</h3><p>Every event stays queryable. No hidden 10% sample or truncated top rows.</p></article>
-          <article class="value"><span class="value-num">02</span><h3>Every project in one view</h3><p>See which site is winning, then drill into the project behind the signal.</p></article>
-          <article class="value"><span class="value-num">03</span><h3>LLM-ready installation</h3><p>A deterministic guide lets an agent deploy, instrument, verify, and hand over the bookmark.</p></article>
-          <article class="value"><span class="value-num">04</span><h3>Cookieless by design</h3><p>No persistent identity, no cross-day trail, and typically no analytics consent banner.</p></article>
-          <article class="value"><span class="value-num">05</span><h3>Tiny on the page</h3><p>The tracker targets under 3 KB gzipped and stays out of your rendering path.</p></article>
-          <article class="value"><span class="value-num">06</span><h3>Your data, your edge</h3><p>Run on Cloudflare Worker + D1 free-tier infrastructure that you control.</p></article>
+        <div class="values">
+          <article class="value"><div class="value-top"><span class="ico-box"><svg class="ico"><use href="#i-db"/></svg></span><span>01</span></div><h3>Full data, never sampled</h3><p>Every event stays queryable. No hidden 10% sample or truncated top rows.</p></article>
+          <article class="value"><div class="value-top"><span class="ico-box"><svg class="ico"><use href="#i-grid"/></svg></span><span>02</span></div><h3>Every project in one view</h3><p>See which site is winning, then drill into the project behind the signal.</p></article>
+          <article class="value"><div class="value-top"><span class="ico-box"><svg class="ico"><use href="#i-bot"/></svg></span><span>03</span></div><h3>LLM-ready installation</h3><p>A deterministic guide lets an agent deploy, instrument, verify, and hand over the bookmark.</p></article>
+          <article class="value"><div class="value-top"><span class="ico-box"><svg class="ico"><use href="#i-eyeoff"/></svg></span><span>04</span></div><h3>Cookieless by design</h3><p>No persistent identity, no client storage, no cross-day trail, and typically no analytics consent banner.</p></article>
+          <article class="value"><div class="value-top"><span class="ico-box"><svg class="ico"><use href="#i-feather"/></svg></span><span>05</span></div><h3>Tiny on the page</h3><p>Under 3 KB gzipped, loaded with defer, and out of your rendering path.</p></article>
+          <article class="value"><div class="value-top"><span class="ico-box"><svg class="ico"><use href="#i-cloud"/></svg></span><span>06</span></div><h3>Your data, your edge</h3><p>Runs on Cloudflare Worker + D1 free-tier infrastructure that you control.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="block" id="features">
+    <section class="block subtle" id="features">
       <div class="wrap">
-        <header class="section-head">
-          <span class="kicker">The useful signals</span>
-          <div>
-            <h2>Everything a landing page needs to tell you.</h2>
-            <p class="section-copy">Perch keeps the scope focused while covering the traffic, attention, acquisition, and conversion questions that actually shape the next iteration.</p>
-          </div>
+        <header class="head">
+          <div><span class="kicker">The useful signals</span><h2>Everything a landing page needs to tell you.</h2></div>
+          <p>Perch keeps the scope focused while covering the traffic, attention, acquisition, and conversion questions that actually shape the next iteration.</p>
         </header>
-        <div class="feature-grid">
-          <article class="feature"><span class="feature-icon">↗</span><h3>Traffic</h3><p>Pageviews, daily unique visitors, sessions, bounce rate, and pages per session.</p></article>
-          <article class="feature"><span class="feature-icon">◎</span><h3>Engagement</h3><p>CTA clicks, custom events, and automatic outbound-link tracking.</p></article>
-          <article class="feature"><span class="feature-icon">↙</span><h3>Acquisition</h3><p>Referring hosts plus UTM source, medium, and campaign.</p></article>
-          <article class="feature"><span class="feature-icon">◇</span><h3>Audience</h3><p>Country, device, browser, operating system, and language.</p></article>
-          <article class="feature"><span class="feature-icon">≡</span><h3>Content</h3><p>Top pages and entry pages reveal where attention begins.</p></article>
-          <article class="feature"><span class="feature-icon">●</span><h3>Realtime</h3><p>Visitors active in the last five minutes, by project and globally.</p></article>
-          <article class="feature"><span class="feature-icon">%</span><h3>Conversions</h3><p>Unique CTA conversion and a simple pageview-to-CTA goal.</p></article>
-          <article class="feature"><span class="feature-icon">⌁</span><h3>Portfolio view</h3><p>Rank every project by traffic with comparisons and sparklines.</p></article>
-          <article class="feature"><span class="feature-icon">↓</span><h3>Export & API</h3><p>CSV downloads and a documented unsampled JSON rollup endpoint.</p></article>
-          <article class="feature"><span class="feature-icon">⚡</span><h3>Web Vitals</h3><p>Optional LCP, INP, and CLS collection—off until you ask for it.</p></article>
+        <div class="features">
+          <article class="feature"><svg class="ico"><use href="#i-trend"/></svg><h3>Traffic</h3><p>Pageviews, daily unique visitors, sessions, engaged visits, and pages per visit.</p><span class="tag neutral">pageviews · uniques</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-pointer"/></svg><h3>Engagement</h3><p>CTA clicks, custom events, outbound links, scroll depth and time on page.</p><span class="tag neutral">data-perch-cta</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-compass"/></svg><h3>Acquisition</h3><p>Channels (including AI assistants), referring hosts, and UTM source, medium and campaign.</p><span class="tag neutral">utm_* · AI referrals</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-globe"/></svg><h3>Audience</h3><p>Country, device, browser, operating system, and language.</p><span class="tag neutral">country-level only</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-file"/></svg><h3>Content</h3><p>Top, entry and exit pages, with scroll depth per page.</p><span class="tag neutral">top · entry · exit</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-activity"/></svg><h3>Realtime</h3><p>Visitors active in the last five minutes, by project and globally.</p><span class="tag neutral">last 5 minutes</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-percent"/></svg><h3>Conversions</h3><p>Conversion rate per CTA and per custom event, not just one number per page.</p><span class="tag neutral">pageview → cta</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-grid"/></svg><h3>Portfolio view</h3><p>Rank every project, compare periods, and spot a site that stopped sending data.</p><span class="tag neutral">all projects</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-download"/></svg><h3>Export &amp; API</h3><p>CSV downloads and a documented, unsampled JSON rollup endpoint.</p><span class="tag neutral">/api/rollup</span></article>
+          <article class="feature"><svg class="ico"><use href="#i-zap"/></svg><h3>Web Vitals</h3><p>Optional LCP, INP, and CLS at the 75th percentile, off until you ask for it.</p><span class="tag neutral">data-perf</span></article>
         </div>
       </div>
     </section>
 
     <section class="block" id="how">
       <div class="wrap">
-        <header class="section-head">
-          <span class="kicker">How it works</span>
-          <div><h2>From script tag to clear decisions.</h2></div>
+        <header class="head">
+          <div><span class="kicker">How it works</span><h2>From script tag to clear decisions.</h2></div>
+          <p>No vendor cloud in the loop. Your pages talk to your Worker, your Worker writes to your database, and only you can open the dashboard.</p>
         </header>
+        <div class="pipeline" role="img" aria-label="Your sites send anonymous events to your Cloudflare Worker, which stores them in your D1 database; your dashboard sits behind Cloudflare Access">
+          <div class="node"><div class="node-title"><span class="ico-box"><svg class="ico"><use href="#i-code"/></svg></span><span><b>Your sites</b><small>perch.js on every page</small></span></div><p>Sends pageviews, CTA clicks, outbound links, engagement and custom events. No cookies, no IP, no device data.</p><div class="chips"><span class="tag lime">pageview</span><span class="tag lime">cta</span><span class="tag lime">engagement</span></div></div>
+          <div class="link"><span>/collect</span><svg class="ico"><use href="#i-arrow"/></svg><small>public</small></div>
+          <div class="node"><div class="node-title"><span class="ico-box"><svg class="ico"><use href="#i-cloud"/></svg></span><span><b>Cloudflare Worker</b><small>your-worker.workers.dev</small></span></div><p>Derives country, device, browser and channel. Hashes IP + UA + date + salt, then discards the IP.</p><div class="chips"><span class="tag lime">daily hash</span></div></div>
+          <div class="link"><span>INSERT</span><svg class="ico"><use href="#i-arrow"/></svg><small>one row</small></div>
+          <div class="node"><div class="node-title"><span class="ico-box"><svg class="ico"><use href="#i-db"/></svg></span><span><b>D1 database</b><small>in your account</small></span></div><p>Raw events plus a nightly summary. Every metric is a SQL query, so nothing is sampled or capped.</p><div class="chips"><span class="tag lime">full data</span></div></div>
+          <div class="link"><span>/api/*</span><svg class="ico"><use href="#i-arrow"/></svg><small>gated</small></div>
+          <div class="node dark"><div class="node-title"><span class="ico-box"><svg class="ico"><use href="#i-lock"/></svg></span><span><b>Your dashboard</b><small>behind Cloudflare Access</small></span></div><p>Sign in once with an identity you already have. One bookmark for every project.</p><div class="chips"><span class="tag inverse">owner only</span></div></div>
+        </div>
         <div class="steps">
-          <article class="step"><h3>Add one script</h3><p>Give each landing page a stable project ID and mark the CTAs that matter.</p></article>
-          <article class="step"><h3>Send to your edge</h3><p>Your Cloudflare Worker enriches anonymous events and stores them in your D1 database.</p></article>
-          <article class="step"><h3>Open your dashboard</h3><p>Sign in once through Cloudflare Access and use one bookmark for every project.</p></article>
+          <div class="step"><div class="rail"><b>1</b></div><span class="kicker">Embed</span><h3>Add one script</h3><p>Give each landing page a stable project ID and mark the CTAs that matter.</p></div>
+          <div class="step"><div class="rail"><b>2</b></div><span class="kicker">Collect</span><h3>Send to your edge</h3><p>Your Cloudflare Worker enriches anonymous events and stores them in your D1 database.</p></div>
+          <div class="step"><div class="rail"><b>3</b></div><span class="kicker">Decide</span><h3>Open your dashboard</h3><p>Sign in once through Cloudflare Access and use one bookmark for every project.</p></div>
         </div>
       </div>
     </section>
 
-    <section class="block preview-block" id="dashboard-preview">
+    <section class="block tint preview" id="dashboard-preview">
       <div class="wrap">
-        <header class="section-head">
-          <span class="kicker">Dashboard preview</span>
-          <div>
-            <h2>The high ground, without the noise.</h2>
-            <p class="section-copy">Lead with the portfolio, spot the project drawing attention, then move into the details.</p>
-          </div>
+        <header class="head">
+          <div><span class="kicker">Dashboard preview</span><h2>The high ground, without the noise.</h2></div>
+          <p>Lead with the portfolio, spot the project drawing attention, then move into the details. Every number compares itself with the previous period, and every row is a filter.</p>
         </header>
-        <div class="dashboard" role="img" aria-label="Preview of the Perch analytics dashboard showing portfolio metrics">
-          <div class="dash-top"><span class="dash-logo">P · Perch</span><span class="fake-select">All projects⌄</span></div>
-          <div class="dash-title"><small>Portfolio overview</small><h3>All your sites, one quiet view.</h3></div>
-          <div class="dash-kpis">
-            <div class="dash-kpi"><span>Pageviews</span><strong>18,492</strong></div>
-            <div class="dash-kpi"><span>Unique visitors</span><strong>12,801</strong></div>
-            <div class="dash-kpi"><span>Sessions</span><strong>13,945</strong></div>
-            <div class="dash-kpi"><span>Live now</span><strong>37</strong></div>
-            <div class="dash-kpi"><span>Projects</span><strong>6</strong></div>
+        <div class="mock" role="img" aria-label="A Perch project dashboard filtered to visitors from Hacker News, with KPI tiles, a traffic chart against the previous period, and sources, pages and goals panels">
+          <div class="mock-bar">
+            <!-- mini --><svg class="mini" viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="24" fill="#12201A"/><g transform="translate(0 -3)"><path fill="#C8E474" d="M63 69H24A39 39 0 0 1 63 30Z"/><circle fill="#C8E474" cx="63" cy="31.5" r="9"/><path fill="#C8E474" d="M70.8 27.3 81 31.5 70.8 35.7Z"/><rect fill="#fff" x="15" y="75" width="66" height="5.25" rx="2.625"/></g></svg><!-- /mini -->
+                        <span class="select"><svg class="ico"><use href="#i-grid"/></svg>Studio launch<svg class="ico"><use href="#i-chevron"/></svg></span>
+            <span class="select"><svg class="ico"><use href="#i-cal"/></svg>Last 30 days<svg class="ico"><use href="#i-chevron"/></svg></span>
+            <span class="select"><svg class="ico"><use href="#i-activity"/></svg>vs previous period</span>
+            <span class="select filter"><svg class="ico"><use href="#i-filter"/></svg>Referrer is news.ycombinator.com<svg class="ico"><use href="#i-x"/></svg></span>
+            <span class="grow"></span>
+            <span class="live"><i class="dot"></i>12 visitors now</span>
           </div>
-          <div class="dash-grid">
-            <div class="dash-card"><strong>Portfolio traffic</strong><div class="chart-bars" aria-hidden="true"><i style="height:31%"></i><i style="height:44%"></i><i style="height:36%"></i><i style="height:58%"></i><i style="height:51%"></i><i style="height:78%"></i><i style="height:70%"></i><i style="height:88%"></i><i style="height:76%"></i><i style="height:94%"></i><i style="height:82%"></i><i style="height:100%"></i></div></div>
-            <div class="dash-card"><strong>Top projects</strong><div class="rank-list"><div class="rank-line" style="--w:100%"><span>Studio launch</span><span>6.4k</span></div><div class="rank-line" style="--w:72%"><span>Field notes</span><span>4.6k</span></div><div class="rank-line" style="--w:49%"><span>Tiny tools</span><span>3.1k</span></div><div class="rank-line" style="--w:31%"><span>Portfolio</span><span>2.0k</span></div></div></div>
+          <div class="pv-kpis">
+            <div class="on"><small>Unique visitors</small><b>6,412</b><em>+22%</em></div>
+            <div><small>Pageviews</small><b>8,930</b><em>+18%</em></div>
+            <div><small>CTA conversion</small><b>7.4%</b><em>+1.6 pt</em></div>
+            <div><small>Engaged visits</small><b>58%</b><em>+4 pt</em></div>
+            <div><small>Avg. scroll depth</small><b>64%</b><em class="down">−3 pt</em></div>
+          </div>
+          <div class="pv-chart">
+            <div class="legend"><b>Unique visitors per day</b><span><i></i>Last 30 days</span><span><i class="prev"></i>Previous 30 days</span></div>
+            <svg class="trend" viewBox="0 0 1088 190" preserveAspectRatio="none" style="height:190px" aria-hidden="true">
+              <line x1="0" x2="1088" y1="47.5" y2="47.5" stroke="#e4e2da"/><line x1="0" x2="1088" y1="95" y2="95" stroke="#e4e2da"/><line x1="0" x2="1088" y1="142.5" y2="142.5" stroke="#e4e2da"/>
+              <polygon fill="#f0f7d9" points="0,190 0,148.4 37.5,144.8 75,146 112.6,142.5 150.1,139.3 187.6,141 225.1,137.2 262.6,133.6 300.1,135.4 337.7,137.8 375.2,132.1 412.7,127.7 450.2,129.4 487.7,131.2 525.2,124.7 562.8,119.9 600.3,122 637.8,117.3 675.3,112.2 712.8,115.5 750.3,118.8 787.9,110.4 825.4,105.7 862.9,8.9 900.4,70.6 937.9,92 975.4,95.6 1013,88.5 1050.5,84.6 1088,79.6 1088,190"/>
+              <polyline fill="none" stroke="#cfccc1" stroke-width="1.5" stroke-dasharray="5 5" points="0,154.4 37.5,152.6 75,151.1 112.6,152 150.1,149 187.6,149.9 225.1,147.8 262.6,146.4 300.1,146.9 337.7,145.5 375.2,144.3 412.7,145.2 450.2,143.1 487.7,141.9 525.2,142.5 562.8,140.7 600.3,139.5 637.8,140.1 675.3,138.6 712.8,137.2 750.3,137.8 787.9,136.3 825.4,135.1 862.9,135.7 900.4,133.9 937.9,133 975.4,133.6 1013,131.8 1050.5,130.9 1088,129.7"/>
+              <polyline fill="none" stroke="#2f6045" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="0,148.4 37.5,144.8 75,146 112.6,142.5 150.1,139.3 187.6,141 225.1,137.2 262.6,133.6 300.1,135.4 337.7,137.8 375.2,132.1 412.7,127.7 450.2,129.4 487.7,131.2 525.2,124.7 562.8,119.9 600.3,122 637.8,117.3 675.3,112.2 712.8,115.5 750.3,118.8 787.9,110.4 825.4,105.7 862.9,8.9 900.4,70.6 937.9,92 975.4,95.6 1013,88.5 1050.5,84.6 1088,79.6"/>
+            </svg>
+            <div class="tip">Thu, Nov 10 · 610 visitors<span>+229% vs previous · top source: HN</span></div>
+            <div class="axis"><span>Oct 19</span><span>Oct 26</span><span>Nov 2</span><span>Nov 9</span><span>Nov 17</span></div>
+          </div>
+          <div class="panels">
+            <div class="panel"><div class="panel-head"><b>Sources</b><span class="seg"><span class="on">Channels</span><span>Referrers</span><span>Campaigns</span></span></div>
+              <div class="prow"><i style="width:100%"></i>Direct<span class="x">1,640</span></div>
+              <div class="prow"><i style="width:91%"></i>Search<span class="x">1,488</span></div>
+              <div class="prow"><i style="width:74%"></i>AI assistants <span class="tag lime">new</span><span class="x">1,212</span></div>
+              <div class="prow"><i style="width:60%"></i>Social<span class="x">980</span></div>
+              <div class="prow"><i style="width:29%"></i>Email<span class="x">476</span></div>
+            </div>
+            <div class="panel"><div class="panel-head"><b>Pages</b><span class="seg"><span class="on">Top</span><span>Entry</span><span>Exit</span></span></div>
+              <div class="prow"><i style="width:100%"></i>/<span class="x">71% scroll · 4,102</span></div>
+              <div class="prow"><i style="width:34%"></i>/pricing<span class="x">58% scroll · 1,388</span></div>
+              <div class="prow"><i style="width:29%"></i>/blog/launch<span class="x">82% scroll · 1,206</span></div>
+              <div class="prow"><i style="width:12%"></i>/docs<span class="x">44% scroll · 512</span></div>
+              <div class="prow"><i style="width:5%"></i>/changelog<span class="x">39% scroll · 204</span></div>
+            </div>
+            <div class="panel"><div class="panel-head"><b>Goals</b><span class="seg"><span class="on">CTAs</span><span>Events</span><span>Outbound</span></span></div>
+              <div class="prow"><i style="width:100%"></i>signup-hero<span class="x">312 clicks · 4.9%</span></div>
+              <div class="prow"><i style="width:45%"></i>demo-nav<span class="x">141 clicks · 2.2%</span></div>
+              <div class="prow"><i style="width:28%"></i>pricing-footer<span class="x">88 clicks · 1.4%</span></div>
+              <div class="prow"><i style="width:21%"></i>newsletter_signup<span class="x">64 events · 1.0%</span></div>
+              <div class="prow"><i style="width:16%"></i>github.com<span class="x">51 clicks · 0.8%</span></div>
+            </div>
           </div>
         </div>
+        <div class="callouts">
+          <div><svg class="ico"><use href="#i-activity"/></svg><h3>Always compared</h3><p>Every tile and chart shows the previous period, so a number is never just a number.</p></div>
+          <div><svg class="ico"><use href="#i-filter"/></svg><h3>Every row is a filter</h3><p>Click a referrer, page, country or CTA to scope the whole view to it.</p></div>
+          <div><svg class="ico"><use href="#i-percent"/></svg><h3>Conversion per CTA</h3><p>See which button earns its place, not just how many clicks the page got.</p></div>
+          <div><svg class="ico"><use href="#i-bot"/></svg><h3>AI referrals, separated</h3><p>ChatGPT, Perplexity, Claude and Gemini visits get their own channel.</p></div>
+        </div>
+        <div class="center"><a class="btn primary" href="./dashboard/?demo" data-perch-cta="demo-preview">Explore the live demo</a></div>
       </div>
     </section>
 
     <section class="block" id="comparison">
       <div class="wrap">
-        <header class="section-head">
-          <span class="kicker">A calmer alternative</span>
-          <div>
-            <h2>Analytics on your terms.</h2>
-            <p class="section-copy">Perch is deliberately small and self-hosted, with the portfolio view and integration path built around independent site owners.</p>
-          </div>
+        <header class="head">
+          <div><span class="kicker">A calmer alternative</span><h2>Analytics on your terms.</h2></div>
+          <p>Perch is deliberately small and self-hosted, with the portfolio view and integration path built around independent site owners.</p>
         </header>
-        <div class="comparison-wrap">
+        <div class="table-wrap">
           <table class="comparison">
-            <thead><tr><th>Capability</th><th class="perch">Perch</th><th>Google Analytics</th><th>Cloudflare Web Analytics</th></tr></thead>
+            <thead><tr><th scope="col">Capability</th><th scope="col" class="perch"><span><!-- mini --><svg class="mini" viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="24" fill="#12201A"/><g transform="translate(0 -3)"><path fill="#C8E474" d="M63 69H24A39 39 0 0 1 63 30Z"/><circle fill="#C8E474" cx="63" cy="31.5" r="9"/><path fill="#C8E474" d="M70.8 27.3 81 31.5 70.8 35.7Z"/><rect fill="#fff" x="15" y="75" width="66" height="5.25" rx="2.625"/></g></svg><!-- /mini -->Perch</span></th><th scope="col">Google Analytics</th><th scope="col">Cloudflare Web Analytics</th></tr></thead>
             <tbody>
-              <tr><td>Cookies / consent</td><td class="perch yes">Cookieless</td><td class="limited">Configuration-dependent</td><td class="yes">Cookieless</td></tr>
-              <tr><td>Sampling</td><td class="perch yes">None</td><td class="limited">Can apply</td><td class="limited">Sampled reporting</td></tr>
-              <tr><td>Data ownership</td><td class="perch yes">Your D1 database</td><td>Vendor-hosted</td><td>Vendor-hosted</td></tr>
-              <tr><td>Global multi-project view</td><td class="perch yes">Built in</td><td class="limited">Account navigation</td><td class="limited">Per-site views</td></tr>
-              <tr><td>Self-hostable</td><td class="perch yes">Yes</td><td>No</td><td>No</td></tr>
-              <tr><td>Base software price</td><td class="perch yes">Free / open source</td><td>Free tier</td><td>Free</td></tr>
+              <tr><th scope="row">Cookies / consent</th><td class="perch yes"><span><svg class="ico"><use href="#i-check"/></svg>Cookieless</span></td><td class="some"><span><svg class="ico"><use href="#i-minus"/></svg>Configuration-dependent</span></td><td class="yes"><span><svg class="ico"><use href="#i-check"/></svg>Cookieless</span></td></tr>
+              <tr><th scope="row">Sampling</th><td class="perch yes"><span><svg class="ico"><use href="#i-check"/></svg>None</span></td><td class="some"><span><svg class="ico"><use href="#i-minus"/></svg>Can apply</span></td><td class="some"><span><svg class="ico"><use href="#i-minus"/></svg>Sampled reporting</span></td></tr>
+              <tr><th scope="row">Data ownership</th><td class="perch yes"><span><svg class="ico"><use href="#i-check"/></svg>Your D1 database</span></td><td class="no"><span><svg class="ico"><use href="#i-x"/></svg>Vendor-hosted</span></td><td class="no"><span><svg class="ico"><use href="#i-x"/></svg>Vendor-hosted</span></td></tr>
+              <tr><th scope="row">Global multi-project view</th><td class="perch yes"><span><svg class="ico"><use href="#i-check"/></svg>Built in</span></td><td class="some"><span><svg class="ico"><use href="#i-minus"/></svg>Account navigation</span></td><td class="some"><span><svg class="ico"><use href="#i-minus"/></svg>Per-site views</span></td></tr>
+              <tr><th scope="row">Self-hostable</th><td class="perch yes"><span><svg class="ico"><use href="#i-check"/></svg>Yes</span></td><td class="no"><span><svg class="ico"><use href="#i-x"/></svg>No</span></td><td class="no"><span><svg class="ico"><use href="#i-x"/></svg>No</span></td></tr>
+              <tr><th scope="row">Base software price</th><td class="perch yes"><span><svg class="ico"><use href="#i-check"/></svg>Free / open source</span></td><td class="yes"><span><svg class="ico"><use href="#i-check"/></svg>Free tier</span></td><td class="yes"><span><svg class="ico"><use href="#i-check"/></svg>Free</span></td></tr>
             </tbody>
           </table>
         </div>
+        <p class="note">Based on each product’s default setup as of November 2026; plans and settings change, so check the vendor’s documentation. Google Analytics and Cloudflare are trademarks of their respective owners.</p>
       </div>
     </section>
 
-    <section class="block privacy" id="privacy">
-      <div class="wrap privacy-grid">
-        <div>
-          <span class="kicker">Privacy is the architecture</span>
-          <h2>Count the visit. Forget the visitor.</h2>
-          <p class="section-copy">Perch derives the minimum useful context at the edge, hashes and discards the raw IP, and rotates anonymous identifiers every day. There is no person-level profile to browse or sell.</p>
-        </div>
-        <div class="privacy-list">
-          <div class="privacy-item"><span>✓</span><span>No cookies or localStorage identity</span></div>
-          <div class="privacy-item"><span>✓</span><span>No raw IP stored or returned</span></div>
-          <div class="privacy-item"><span>✓</span><span>No cross-site or cross-day tracking</span></div>
-          <div class="privacy-item"><span>✓</span><span>Country-level geography only</span></div>
-          <div class="privacy-item"><span>✓</span><span>GDPR/CCPA-friendly, typically no banner</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="block" id="open-source">
+    <section class="block moss" id="privacy">
       <div class="wrap">
-        <div class="open-card">
+        <div class="privacy-grid">
           <div>
-            <span class="kicker">Open source / free to run</span>
-            <h2>Keep the code. Keep the data. Keep the bill tiny.</h2>
-            <p>Perch uses GitHub Pages plus Cloudflare Worker and D1 free tiers for the traffic profile it is designed for. Fork it, inspect it, extend it, or let an LLM wire it into your next launch.</p>
+            <span class="kicker">Privacy is the architecture</span>
+            <h2>Count the visit. Forget the visitor.</h2>
+            <p class="lead2">Perch derives the minimum useful context at the edge, hashes and discards the raw IP, and rotates anonymous identifiers every day. There is no person-level profile to browse or sell.</p>
           </div>
-          <div class="open-links">
-            <a href="https://github.com/YOUR-USER/YOUR-REPO">GitHub repository <span>↗</span></a>
-            <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/README.md">Read overview <span>↗</span></a>
-            <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md">Integration guide <span>↗</span></a>
-          </div>
+          <ul class="checklist">
+            <li><svg class="ico"><use href="#i-check"/></svg>No cookies or client-side storage at all</li>
+            <li><svg class="ico"><use href="#i-check"/></svg>No raw IP stored or returned</li>
+            <li><svg class="ico"><use href="#i-check"/></svg>No cross-site or cross-day tracking</li>
+            <li><svg class="ico"><use href="#i-check"/></svg>Country-level geography only</li>
+            <li><svg class="ico"><use href="#i-check"/></svg>GDPR/CCPA-friendly, typically no banner</li>
+          </ul>
+        </div>
+        <div class="policy">
+          <div><b>Privacy-policy text you can reuse</b><p id="policy-text">We use Perch, a cookieless analytics tool, to understand aggregate site traffic and improve this website. Perch does not store IP addresses or create cross-site profiles. Anonymous visitor identifiers rotate daily. We collect page paths, coarse country and device information, referring domains, campaign tags, and interactions such as button clicks. Do not submit personal information through analytics event properties.</p></div>
+          <button class="btn small lime" id="copy-policy" type="button" data-perch-cta="copy-policy">Copy policy text</button>
         </div>
       </div>
     </section>
 
     <section class="block" id="faq">
       <div class="wrap faq">
-        <div><span class="kicker">FAQ</span><h2>A few things worth knowing.</h2></div>
+        <div class="faq-head"><span class="kicker">FAQ</span><h2>A few things worth knowing.</h2><p>Short answers here. README.md and INTEGRATION.md go deeper.</p></div>
         <div class="questions">
-          <details><summary>Do I need a cookie banner?</summary><p>Perch uses no cookies or persistent identity, so analytics alone typically does not require a consent banner. Your site may still need one for other tools; confirm requirements for your jurisdiction.</p></details>
-          <details><summary>Is Perch GDPR compliant?</summary><p>Perch is designed for data minimization: no raw IP storage, no cross-site profiles, daily-rotating anonymous hashes, and country-level location only. Compliance also depends on how you deploy it and what your site collects elsewhere.</p></details>
-          <details><summary>What does it cost?</summary><p>Perch itself is MIT-licensed. GitHub Pages, Cloudflare Workers, Access, and D1 all offer free tiers that suit personal and modest marketing traffic; provider usage fees may apply beyond those limits.</p></details>
-          <details><summary>Can I self-host it?</summary><p>Yes. That is the default model: your Worker, your D1 database, your Access policy, and your GitHub Pages site.</p></details>
-          <details><summary>How accurate is it?</summary><p>Perch queries every event it receives without sampling. Cookieless daily visitors and 30-minute sessions are intentionally coarse approximations, and blockers can prevent some events unless you use a first-party endpoint.</p></details>
-          <details><summary>How do I add another site?</summary><p>Register a new project ID, add the same tracker with that ID, and instrument its CTAs. It appears automatically inside the existing project dropdown—no new dashboard or backend.</p></details>
+          <details open><summary>Do I need a cookie banner?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Perch uses no cookies or persistent identity, so analytics alone typically does not require a consent banner. Your site may still need one for other tools; confirm requirements for your jurisdiction.</p></details>
+          <details><summary>Is Perch GDPR compliant?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Perch is designed for data minimization: no raw IP storage, no cross-site profiles, daily-rotating anonymous hashes, and country-level location only. Compliance also depends on how you deploy it and what your site collects elsewhere.</p></details>
+          <details><summary>What does it cost?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Perch itself is MIT-licensed. GitHub Pages, Cloudflare Workers, Access, and D1 all offer free tiers that suit personal and modest marketing traffic; a nightly summary keeps dashboard reads small. Provider usage fees may apply beyond those limits.</p></details>
+          <details><summary>Can I self-host it?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Yes. That is the default model: your Worker, your D1 database, your Access policy, and your GitHub Pages site. The Deploy to Cloudflare button creates the Worker and database for you.</p></details>
+          <details><summary>How accurate is it?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Perch queries every event it receives without sampling. Cookieless daily visitors and 30-minute sessions are intentionally coarse approximations, and blockers can prevent some events unless you use a first-party endpoint.</p></details>
+          <details><summary>How do I add another site?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Register a new project ID, add the same tag with that ID, and instrument its CTAs. It appears automatically inside the existing project dropdown, with an install check that confirms the first events.</p></details>
+          <details><summary>Will ad blockers block it?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Some privacy extensions block <code>*.workers.dev</code>. Serve your Worker from a subdomain of your own site, such as <code>a.example.com</code>, and load <code>/perch.js</code> from there; most of that loss goes away.</p></details>
+          <details><summary>Does it work with single-page apps?<svg class="ico"><use href="#i-chevron"/></svg></summary><p>Yes. Call <code>perch.track("pageview")</code> after each route change. Perch reads the current path, and closes out the previous page’s scroll and time first.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="block ink" id="open-source">
+      <div class="wrap band">
+        <div>
+          <span class="kicker">Open source / free to run</span>
+          <h2>Keep the code. Keep the data. Keep the bill tiny.</h2>
+          <p>Perch uses GitHub Pages plus Cloudflare Worker and D1 free tiers for the traffic profile it is designed for. Fork it, inspect it, extend it, or let an LLM wire it into your next launch.</p>
+          <div class="actions">
+            <a class="btn lime" href="https://github.com/tanzir71/perch/blob/main/INTEGRATION.md" data-perch-cta="get-started-band">Get started</a>
+            <a class="btn outline-inverse" href="https://github.com/tanzir71/perch" data-perch-cta="github-band">View on GitHub</a>
+          </div>
+        </div>
+        <div class="band-links">
+          <a href="https://github.com/tanzir71/perch">GitHub repository <svg class="ico"><use href="#i-out"/></svg></a>
+          <a href="https://github.com/tanzir71/perch/blob/main/README.md">Read overview <svg class="ico"><use href="#i-out"/></svg></a>
+          <a href="https://github.com/tanzir71/perch/blob/main/INTEGRATION.md">Integration guide <svg class="ico"><use href="#i-out"/></svg></a>
+          <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/tanzir71/perch" data-perch-cta="deploy-band">Deploy to Cloudflare <svg class="ico"><use href="#i-out"/></svg></a>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="wrap footer-inner">
-      <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true">P</span><span>Perch</span></a>
-      <div class="footer-links">
-        <a href="https://github.com/YOUR-USER/YOUR-REPO">Repository</a>
-        <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/INTEGRATION.md">Docs</a>
-        <a href="https://github.com/YOUR-USER/YOUR-REPO/blob/main/LICENSE">MIT License</a>
-        <span>© 2026 Perch</span>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <a class="logo" href="#top"><!-- logo --><svg class="wordmark" viewBox="3 16 165 81" role="img" aria-label="Perch"><path fill="currentColor" d="M3.86 95.57V47.57H13.41V53.43H13.84C14.27 52.5 14.88 51.54 15.68 50.57C16.5 49.59 17.56 48.77 18.86 48.12C20.18 47.45 21.82 47.12 23.77 47.12C26.32 47.12 28.67 47.78 30.82 49.12C32.97 50.43 34.69 52.43 35.98 55.09C37.27 57.75 37.91 61.07 37.91 65.07C37.91 68.96 37.28 72.25 36.02 74.93C34.78 77.6 33.08 79.62 30.93 81C28.8 82.37 26.4 83.05 23.75 83.05C21.87 83.05 20.27 82.74 18.95 82.12C17.65 81.5 16.58 80.71 15.75 79.78C14.92 78.82 14.28 77.86 13.84 76.89H13.55V95.57H3.86ZM13.34 65.03C13.34 67.1 13.63 68.91 14.2 70.46C14.78 72 15.61 73.21 16.7 74.07C17.8 74.92 19.12 75.34 20.68 75.34C22.26 75.34 23.59 74.91 24.68 74.05C25.77 73.17 26.6 71.96 27.16 70.41C27.73 68.85 28.02 67.06 28.02 65.03C28.02 63.01 27.74 61.24 27.18 59.71C26.62 58.18 25.8 56.98 24.7 56.12C23.61 55.25 22.27 54.82 20.68 54.82C19.11 54.82 17.77 55.24 16.68 56.07C15.61 56.9 14.78 58.09 14.2 59.62C13.63 61.15 13.34 62.95 13.34 65.03ZM57.71 83.16C54.12 83.16 51.03 82.43 48.44 80.98C45.86 79.51 43.88 77.43 42.49 74.75C41.09 72.06 40.39 68.87 40.39 65.18C40.39 61.59 41.09 58.44 42.49 55.73C43.88 53.02 45.84 50.9 48.37 49.39C50.92 47.87 53.9 47.12 57.33 47.12C59.63 47.12 61.77 47.49 63.76 48.23C65.76 48.96 67.5 50.06 68.99 51.53C70.49 53 71.65 54.84 72.49 57.07C73.32 59.28 73.74 61.87 73.74 64.84V67.5H44.26V61.5H64.62C64.62 60.11 64.32 58.87 63.71 57.8C63.11 56.72 62.27 55.88 61.19 55.28C60.13 54.65 58.89 54.34 57.49 54.34C56.02 54.34 54.71 54.68 53.58 55.37C52.46 56.03 51.58 56.93 50.94 58.07C50.3 59.19 49.98 60.44 49.96 61.82V67.53C49.96 69.25 50.28 70.75 50.92 72C51.57 73.26 52.49 74.23 53.67 74.91C54.85 75.59 56.25 75.93 57.87 75.93C58.95 75.93 59.93 75.78 60.83 75.48C61.72 75.18 62.49 74.72 63.12 74.12C63.76 73.51 64.24 72.77 64.58 71.89L73.53 72.48C73.08 74.63 72.14 76.51 70.74 78.12C69.34 79.71 67.54 80.95 65.33 81.84C63.13 82.72 60.59 83.16 57.71 83.16ZM77.49 82.48V47.57H86.88V53.66H87.24C87.88 51.5 88.95 49.86 90.45 48.75C91.95 47.63 93.68 47.07 95.63 47.07C96.11 47.07 96.64 47.1 97.2 47.16C97.76 47.22 98.25 47.31 98.68 47.41V56C98.22 55.87 97.59 55.75 96.79 55.64C95.99 55.53 95.25 55.48 94.58 55.48C93.16 55.48 91.89 55.79 90.77 56.41C89.66 57.02 88.78 57.87 88.13 58.96C87.49 60.05 87.18 61.31 87.18 62.73V82.48H77.49ZM115.27 83.16C111.69 83.16 108.62 82.4 106.04 80.89C103.48 79.36 101.51 77.24 100.13 74.53C98.77 71.81 98.09 68.69 98.09 65.16C98.09 61.59 98.78 58.45 100.16 55.75C101.55 53.04 103.53 50.93 106.09 49.41C108.65 47.88 111.69 47.12 115.22 47.12C118.27 47.12 120.94 47.67 123.22 48.78C125.51 49.88 127.32 51.43 128.66 53.43C129.99 55.43 130.72 57.78 130.86 60.48H121.72C121.47 58.74 120.78 57.34 119.68 56.28C118.59 55.2 117.16 54.66 115.38 54.66C113.88 54.66 112.57 55.07 111.45 55.89C110.34 56.69 109.48 57.87 108.86 59.41C108.24 60.96 107.93 62.83 107.93 65.03C107.93 67.25 108.23 69.15 108.84 70.71C109.46 72.27 110.33 73.46 111.45 74.28C112.57 75.09 113.88 75.5 115.38 75.5C116.49 75.5 117.48 75.28 118.36 74.82C119.25 74.37 119.99 73.71 120.56 72.84C121.16 71.96 121.54 70.91 121.72 69.68H130.86C130.71 72.35 129.98 74.7 128.68 76.73C127.39 78.75 125.61 80.32 123.34 81.46C121.06 82.59 118.38 83.16 115.27 83.16ZM144.18 62.3V82.48H134.5V35.93H143.91V53.73H144.32C145.1 51.67 146.38 50.06 148.13 48.89C149.89 47.71 152.1 47.12 154.75 47.12C157.17 47.12 159.29 47.65 161.09 48.71C162.91 49.75 164.32 51.26 165.32 53.23C166.33 55.18 166.83 57.53 166.82 60.25V82.48H157.13V61.98C157.15 59.83 156.6 58.15 155.5 56.96C154.41 55.76 152.88 55.16 150.91 55.16C149.59 55.16 148.42 55.44 147.41 56C146.41 56.56 145.62 57.38 145.04 58.46C144.48 59.52 144.2 60.8 144.18 62.3Z"/><circle class="perched" cx="140.08" cy="24.64" r="7.36"/></svg><!-- /logo --></a>
+          <p>A quiet vantage point over all your sites. Cookieless, self-hostable analytics for landing pages and small site portfolios.</p>
+        </div>
+        <div class="foot-col"><h3>Product</h3><a href="#features">Features</a><a href="#how">How it works</a><a href="./dashboard/?demo">Live demo</a><a href="#comparison">Compare</a><a href="#faq">FAQ</a></div>
+        <div class="foot-col"><h3>Docs</h3><a href="https://github.com/tanzir71/perch/blob/main/README.md">README</a><a href="https://github.com/tanzir71/perch/blob/main/INTEGRATION.md">Integration guide</a><a href="https://github.com/tanzir71/perch/blob/main/README.md#api">API reference</a><a href="llms.txt">llms.txt</a></div>
+        <div class="foot-col"><h3>Project</h3><a href="https://github.com/tanzir71/perch">GitHub</a><a href="https://github.com/tanzir71/perch/blob/main/LICENSE">MIT License</a><a href="https://github.com/tanzir71/perch/issues">Report an issue</a></div>
       </div>
+      <div class="foot-base"><span>© 2026 Perch · MIT licensed</span><span>Runs on Cloudflare Workers + D1. This site is measured by Perch, cookie-free.</span></div>
     </div>
   </footer>
 
   <script>
     (function () {
-      var button = document.querySelector("#copy-install");
-      var code = document.querySelector("#install-code");
-      button.addEventListener("click", async function () {
-        var value = code.textContent.trim();
-        try {
-          await navigator.clipboard.writeText(value);
-        } catch (_) {
-          var area = document.createElement("textarea");
-          area.value = value;
-          area.setAttribute("readonly", "");
-          area.style.position = "fixed";
-          area.style.opacity = "0";
-          document.body.appendChild(area);
-          area.select();
-          document.execCommand("copy");
-          area.remove();
-        }
-        button.textContent = "Copied";
-        setTimeout(function () { button.textContent = "Copy snippet"; }, 1800);
+      var panels = { tag: "index.html", agent: "agent-prompt.md", deploy: "deploy.sh" };
+      var file = document.querySelector("#code-file");
+      var copyButton = document.querySelector("#copy-install");
+      function active() { return document.querySelector("pre[data-panel]:not([hidden])"); }
+      document.querySelectorAll("[data-path]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          document.querySelectorAll("[data-path]").forEach(function (b) { b.setAttribute("aria-selected", String(b === button)); });
+          document.querySelectorAll("pre[data-panel]").forEach(function (pre) { pre.hidden = pre.dataset.panel !== button.dataset.path; });
+          file.textContent = panels[button.dataset.path];
+        });
       });
+      function copy(text, button, label) {
+        function done() { button.lastChild.textContent = "Copied"; setTimeout(function () { button.lastChild.textContent = label; }, 1800); }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done, function () { fallback(text); done(); });
+        } else { fallback(text); done(); }
+      }
+      function fallback(text) {
+        var area = document.createElement("textarea");
+        area.value = text; area.setAttribute("readonly", ""); area.style.position = "fixed"; area.style.opacity = "0";
+        document.body.appendChild(area); area.select();
+        try { document.execCommand("copy"); } catch (_) {}
+        area.remove();
+      }
+      copyButton.addEventListener("click", function () { copy(active().textContent.trim(), copyButton, "Copy snippet"); });
+      var policy = document.querySelector("#copy-policy");
+      policy.addEventListener("click", function () { copy(document.querySelector("#policy-text").textContent, policy, "Copy policy text"); });
     })();
   </script>
   <script

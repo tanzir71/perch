@@ -1,5 +1,9 @@
 name: Deploy Perch to GitHub Pages
 
+# Publishes the marketing site and the live demo dashboard.
+# One-time setup: Settings -> Pages -> Build and deployment -> Source: "GitHub Actions".
+# Nothing is installed here: src/perch.min.js is committed (run `npm run build` after changing src/perch.js).
+
 on:
   push:
     branches:
@@ -29,24 +33,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
-      - name: Build tracker and static site
-        run: |
-          npm ci
-          npm run build
-
-      - name: Assemble static artifact
-        shell: bash
-        run: |
-          mkdir -p _site
-          cp site/index.html _site/index.html
-          cp src/perch.min.js _site/perch.min.js
+      - name: Assemble static site
+        run: node scripts/build-pages.mjs
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: dist/pages
 
   deploy:
     environment:

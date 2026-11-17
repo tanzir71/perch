@@ -18,38 +18,74 @@ after(async () => {
   await server?.close();
 });
 
-test("marketing page renders every product section and remains usable on mobile", async () => {
-  const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
+async function open(width, path = "/dist/pages/index.html") {
+  const page = await browser.newPage({ viewport: { width, height: 900 } });
   const errors = [];
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto(`${server.origin}/dist/pages/index.html`, { waitUntil: "networkidle" });
+  await page.route("**/collect", (route) => route.fulfill({ status: 200, contentType: "application/json", body: "{\"ok\":true}" }));
+  await page.goto(`${server.origin}${path}`, { waitUntil: "networkidle" });
+  return { page, errors };
+}
 
-  await page.getByRole("heading", { name: /A quiet vantage point/ }).waitFor();
-  assert.equal(await page.locator("#install").count(), 1);
-  assert.equal(await page.locator("#why").count(), 1);
-  assert.equal(await page.locator("#features").count(), 1);
-  assert.equal(await page.locator("#comparison").count(), 1);
-  assert.equal(await page.locator("#faq").count(), 1);
-  assert.match(await page.locator("#install-code").innerText(), /data-endpoint=/);
-  assert.equal(await page.locator('[data-perch-cta="get-started-hero"]').count(), 1);
-  assert.equal(await page.locator('[data-perch-cta="demo-hero"]').count(), 1);
-  const tracker = page.locator('script[src="./perch.min.js"]');
-  assert.equal(await tracker.count(), 1);
-  assert.equal(await tracker.getAttribute("data-project-id"), "perch-site");
-  assert.match(await tracker.getAttribute("data-endpoint"), /YOUR-PERCH-WORKER/);
+test("marketing page renders every section, keeps its hooks, and fits a phone", async () => {
+  for (const width of [1440, 375]) {
+    const { page, errors } = await open(width);
+    await page.getByRole("heading", { level: 1, name: /Cookieless analytics for every site you run/ }).waitFor();
+    assert.match(await page.locator(".pill").innerText(), /A quiet vantage point over all your sites/);
+    for (const id of ["audience", "install", "why", "features", "how", "dashboard-preview", "comparison", "privacy", "faq", "open-source"]) {
+      assert.equal(await page.locator(`#${id}`).count(), 1, id);
+    }
+    assert.match(await page.locator("#install-code").innerText(), /data-project-id=/);
+    assert.match(await page.locator("#install-code").innerText(), /perch\.js/);
+    for (const cta of ["get-started-nav", "get-started-hero", "demo-hero", "get-started-band", "github-band"]) {
+      assert.equal(await page.locator(`[data-perch-cta="${cta}"]`).count(), 1, cta);
+    }
+    const tracker = page.locator('script[src="./perch.min.js"]');
+    assert.equal(await tracker.count(), 1);
+    assert.equal(await tracker.getAttribute("data-project-id"), "perch-site");
+    assert.equal(await page.locator("details").count(), 8);
 
+    // Nothing may stick out sideways unless it sits inside its own scroll area.
+    const overflowing = await page.evaluate(() => [...document.querySelectorAll("body *")].filter((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.width === 0 || rect.right <= window.innerWidth + 1) return false;
+      for (let node = element.parentElement; node; node = node.parentElement) {
+        if (/(auto|scroll)/.test(getComputedStyle(node).overflowX)) return false;
+      }
+      return true;
+    }).map((element) => element.className || element.tagName));
+    assert.deepEqual(overflowing, [], `overflow at ${width}px`);
+    assert.deepEqual(errors, []);
+    await page.close();
+  }
+});
+
+test("install tabs switch and snippets copy", async () => {
+  const { page, errors } = await open(1440);
   await page.locator("#copy-install").click();
   await page.getByText("Copied", { exact: true }).waitFor();
-  const fits = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
-  assert.equal(fits, true);
+  await page.locator('[data-path="agent"]').click();
+  assert.equal(await page.locator("#code-file").innerText(), "agent-prompt.md");
+  assert.match(await page.locator('pre[data-panel="agent"]').innerText(), /INTEGRATION\.md/);
+  assert.equal(await page.locator("#install-code").isVisible(), false);
   assert.deepEqual(errors, []);
   await page.close();
 });
 
-test("Pages workflow publishes site index and tracker on main pushes", async () => {
+test("the Pages build ships the live demo dashboard and llms.txt", async () => {
+  const { page, errors } = await open(1280, "/dist/pages/dashboard/?demo");
+  await page.getByText("Project ranking").waitFor();
+  assert.ok((await page.locator("#project-select option").count()) > 2);
+  assert.deepEqual(errors, []);
+  await page.close();
+  const llms = await readFile(new URL("../dist/pages/llms.txt", import.meta.url), "utf8");
+  assert.match(llms, /INTEGRATION\.md/);
+});
+
+test("Pages workflow publishes the static site on main pushes without installing dependencies", async () => {
   const source = await readFile(new URL("../.github/workflows/pages.yml", import.meta.url), "utf8");
   const workflow = parse(source);
   assert.deepEqual(workflow.on.push.branches, ["main"]);
@@ -58,8 +94,10 @@ test("Pages workflow publishes site index and tracker on main pushes", async () 
   assert.equal(workflow.jobs.deploy.environment.name, "github-pages");
   assert.match(source, /actions\/upload-pages-artifact@v3/);
   assert.match(source, /actions\/deploy-pages@v4/);
-  assert.match(source, /npm ci/);
-  assert.match(source, /npm run build/);
-  assert.match(source, /cp site\/index\.html _site\/index\.html/);
-  assert.match(source, /cp src\/perch\.min\.js _site\/perch\.min\.js/);
+  assert.match(source, /node scripts\/build-pages\.mjs/);
+  assert.match(source, /path: dist\/pages/);
+  assert.doesNotMatch(source, /npm ci/);
+
+  const ci = parse(await readFile(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8"));
+  assert.ok(JSON.stringify(ci.jobs).includes("npm run test:all"));
 });

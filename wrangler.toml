@@ -1,0 +1,22 @@
+name = "perch"
+main = "worker/worker.js"
+compatibility_date = "2026-07-23"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "perch"
+database_id = "PASTE_DATABASE_ID_HERE"
+migrations_dir = "migrations"
+
+# Summarise yesterday's events into the `daily` table at 00:15 UTC.
+[triggers]
+crons = ["15 0 * * *"]
+
+[vars]
+# Keep raw events for this many days after they are summarised. Empty keeps everything.
+RETENTION_DAYS = ""
+# "1" rejects beacons whose Origin does not match the project's registered origin.
+STRICT_ORIGIN = ""
+
+# SALT is deliberately not stored here. Configure it with:
+# npx wrangler secret put SALT

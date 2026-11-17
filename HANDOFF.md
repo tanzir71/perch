@@ -1,5 +1,13 @@
 # Perch — Build Handoff for Codex
 
+> **Status, November 2026: this is the original v1 build brief, kept for history.** The current behaviour is described in `README.md` and `INTEGRATION.md`. Where this brief disagrees with them, v2 wins:
+>
+> - **Tracker:** stores nothing in the browser (no `sessionStorage` dedupe). Every page load sends one pageview; a duplicate tag is ignored. It sends one `engagement` event (scroll depth, visible time) when a page is left, and is also served by the Worker at `/perch.js`, which makes `data-endpoint` optional.
+> - **Schema:** lives in `migrations/` (applied with `wrangler d1 migrations apply`), not `worker/schema.sql`. v2 adds `channel`, `scroll_pct`, `engaged_ms`, a `daily` summary table filled by a nightly Cron Trigger, and optional `RETENTION_DAYS`. One events index instead of three.
+> - **Metrics:** bounce is replaced by engaged visits (more than one pageview, any action, or 10+ seconds visible). Channels include AI assistants. Every breakdown can filter the view, and every number can compare with the previous period.
+> - **Ingest:** once a project is registered, unknown project IDs are rejected; `STRICT_ORIGIN` optionally checks the `Origin` header.
+> - **Config:** `wrangler.toml` sits at the repository root. Tests use Playwright for browser code and `node:sqlite` for Worker queries; jsdom is no longer used.
+
 > **Perch** — a quiet vantage point over all your sites. A self-hostable, privacy-first web analytics tool: a landing page loads one `<script>` tag, a small Cloudflare backend collects events, and a single hosted stats page shows every project from one dropdown.
 
 > **Agent:** You are *building the Perch project*. Build iteratively: implement one milestone, run its gate, fix until green, then advance.
@@ -173,7 +181,7 @@ CREATE INDEX IF NOT EXISTS idx_events_project_visitor ON events(project_id, visi
 
 Ingest is a single `INSERT`. Metrics are read-time queries: **uniques** = `COUNT(DISTINCT visitor_hash)`; **sessions** = `COUNT(DISTINCT visitor_hash || (unixepoch(ts)/1800))` (30-min tumbling window — document as an approximation); **bounce rate** = share of sessions with exactly one `pageview`; breakdowns = `GROUP BY country|path|referrer_host|utm_source|device|browser|os|name`.
 
-**Privacy rules (must hold):** no cookies / no `localStorage` identity (`sessionStorage` only for per-tab pageview dedupe; the stats page may use `localStorage` only to remember the last-selected project + date range); raw IP hashed then discarded, never stored/logged/returned; `SALT` never in client code or responses; `props` never carry PII.
+**Privacy rules (must hold):** no cookies and no client storage in the tracker (v2 dropped the old `sessionStorage` dedupe); the private stats page keeps view state in the URL and may use `localStorage` only to remember the last-selected project and date range; raw IP hashed then discarded, never stored/logged/returned; `SALT` never in client code or responses; `props` never carry PII.
 
 ---
 
