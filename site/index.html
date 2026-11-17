@@ -311,6 +311,8 @@
     .foot-col a { display: block; padding: 6px 0; text-decoration: none; font-size: .875rem; }
     .foot-col a:hover { color: var(--moss); }
     .foot-base { display: flex; justify-content: space-between; gap: 24px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+    .foot-base a { color: var(--ink); font-weight: 600; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+    .foot-base a:hover { color: var(--moss); text-decoration-color: currentColor; }
 
     @media (max-width: 1080px) {
       .hero-grid, .install-grid, .privacy-grid, .faq, .band { grid-template-columns: 1fr; }
@@ -760,7 +762,7 @@ npm run deploy                         <span class="c-com"># prints your Worker 
         <div class="foot-col"><h3>Docs</h3><a href="https://github.com/tanzir71/perch/blob/main/README.md">README</a><a href="https://github.com/tanzir71/perch/blob/main/INTEGRATION.md">Integration guide</a><a href="https://github.com/tanzir71/perch/blob/main/README.md#api">API reference</a><a href="llms.txt">llms.txt</a></div>
         <div class="foot-col"><h3>Project</h3><a href="https://github.com/tanzir71/perch">GitHub</a><a href="https://github.com/tanzir71/perch/blob/main/LICENSE">MIT License</a><a href="https://github.com/tanzir71/perch/issues">Report an issue</a></div>
       </div>
-      <div class="foot-base"><span>© 2026 Perch · MIT licensed</span><span>Runs on Cloudflare Workers + D1. This site is measured by Perch, cookie-free.</span></div>
+      <div class="foot-base"><span>© 2026 Perch · MIT licensed · Designed and built by <a href="https://tanziro.com">tanziro.com</a></span><span>Runs on Cloudflare Workers + D1. This site is measured by Perch, cookie-free.</span></div>
     </div>
   </footer>
 
