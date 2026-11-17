@@ -40,13 +40,14 @@ test("marketing page renders every section, keeps its hooks, and fits a phone", 
     }
     assert.match(await page.locator("#install-code").innerText(), /data-project-id=/);
     assert.match(await page.locator("#install-code").innerText(), /perch\.js/);
-    for (const cta of ["get-started-nav", "get-started-hero", "demo-hero", "get-started-band", "github-band"]) {
+    for (const cta of ["get-started-nav", "get-started-hero", "demo-hero", "get-started-band", "github-band", "donate-footer"]) {
       assert.equal(await page.locator(`[data-perch-cta="${cta}"]`).count(), 1, cta);
     }
     const tracker = page.locator('script[src="./perch.min.js"]');
     assert.equal(await tracker.count(), 1);
     assert.equal(await tracker.getAttribute("data-project-id"), "perch-site");
     assert.equal(await page.locator("details").count(), 8);
+    assert.equal(await page.locator('[data-perch-cta="donate-footer"]').getAttribute("href"), "https://buymeacoffee.com/tanzir");
 
     // Nothing may stick out sideways unless it sits inside its own scroll area.
     const overflowing = await page.evaluate(() => [...document.querySelectorAll("body *")].filter((element) => {
